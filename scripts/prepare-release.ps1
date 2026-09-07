@@ -5,7 +5,7 @@ $version = (Get-Content "$projectRoot/package.json" -Raw | ConvertFrom-Json).ver
 if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Expected stable semantic version.' }
 $setupName = "Bou-Time-$version-x64-Setup.exe"
 $portableName = "Bou-Time-$version-x64-Portable.exe"
-foreach ($name in @('Temura-Install.exe', 'Bou-Install.exe', $setupName, $portableName)) {
+foreach ($name in @('Temura-Install.exe', 'Bou-Install.exe', $setupName, $portableName, "$setupName.blockmap", 'latest.yml')) {
     if (!(Test-Path (Join-Path $OutputDirectory $name))) { throw "Build the missing asset first: $name" }
 }
 $setup = Get-Item (Join-Path $OutputDirectory $setupName)
@@ -17,7 +17,9 @@ $manifest = [ordered]@{
     size = $setup.Length
 }
 [IO.File]::WriteAllText((Join-Path $OutputDirectory 'windows-release.json'), ($manifest | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
-$sums = @('Temura-Install.exe', 'Bou-Install.exe', $setupName, $portableName, 'windows-release.json') | ForEach-Object {
+$channel = Get-Content (Join-Path $OutputDirectory 'latest.yml') -Raw
+if ($channel -notmatch "(?m)^version: $([regex]::Escape($version))\s*$" -or !$channel.Contains($setupName)) { throw 'latest.yml does not match this release.' }
+$sums = @('Temura-Install.exe', 'Bou-Install.exe', $setupName, $portableName, "$setupName.blockmap", 'latest.yml', 'windows-release.json') | ForEach-Object {
     $hash = (Get-FileHash (Join-Path $OutputDirectory $_) -Algorithm SHA256).Hash.ToLowerInvariant()
     "$hash  $_"
 }

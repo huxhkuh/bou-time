@@ -1,4 +1,5 @@
 import PwaInstall from "./PwaInstall.jsx";
+import DesktopUpdates from "./DesktopUpdates.jsx";
 import React, { useState } from "react";
 import {
   Download,
@@ -43,6 +44,7 @@ export default function Settings({ state, mutate, notify }) {
   };
   return (
     <div className="settings-grid">
+      {window.bouDesktop?.getUpdateStatus && <DesktopUpdates notify={notify} />}
       <section className="surface">
         <Database className="section-icon" />
         <h2>הזמן שלך. הנתונים שלך.</h2>
@@ -93,7 +95,7 @@ export default function Settings({ state, mutate, notify }) {
         <Download className="section-icon" />
         <h2>גיבוי ושחזור</h2>
         <p>
-          גיבוי JSON כולל לקוחות, פרויקטים, תמחור ורישומים. טיימר פעיל מגובה
+          גיבוי JSON כולל לקוחות, פרויקטים, משימות, תמחור ורישומים. טיימר פעיל מגובה
           במצב מושהה עם הזמן עד רגע הייצוא.
         </p>
         <Button kind="primary" icon={Download} onClick={backup}>

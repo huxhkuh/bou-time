@@ -5,9 +5,11 @@ const {
   session,
   ipcMain,
   Menu,
+  dialog,
 } = require("electron");
 const { readFile } = require("node:fs/promises");
 const path = require("node:path");
+const { createUpdates } = require("./updates.cjs");
 const ORIGIN = "bou://app";
 const root = path.join(__dirname, "..", "dist");
 app.setName("תמורה");
@@ -179,6 +181,37 @@ else {
       app.quit();
     });
     mainWindow.loadURL(ORIGIN + "/");
+    const unavailable = !app.isPackaged
+      ? "עדכונים פנימיים זמינים בגרסה המותקנת של Windows."
+      : process.env.PORTABLE_EXECUTABLE_FILE
+        ? "זוהי גרסה ניידת. כדי לקבל עדכונים פנימיים, התקן את תמורה באמצעות המתקין מ־GitHub."
+        : null;
+    const updater = unavailable ? null : require("electron-updater").autoUpdater;
+    if (updater) updater.logger = null;
+    const updates = createUpdates({
+      updater, version: app.getVersion(), unavailable,
+      publish: (status) => {
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("bou:update-status", status);
+      },
+      confirmInstall: async () => {
+        const { response } = await dialog.showMessageBox(mainWindow, {
+          type: "question", title: "עדכון תמורה", message: "להתקין את העדכון ולהפעיל מחדש?",
+          detail: "חלונות תמורה ייסגרו וייפתחו מחדש אחרי ההתקנה. הנתונים השמורים נשמרים. טיימר פעיל ימשיך למדוד גם בזמן ההתקנה. סיים עריכת טקסט לפני ההמשך.",
+          buttons: ["מאוחר יותר", "התקנה והפעלה מחדש"], defaultId: 0, cancelId: 0, noLink: true,
+        });
+        if (response !== 1) return false;
+        session.defaultSession.flushStorageData();
+        return true;
+      },
+    });
+    ipcMain.handle("bou:update-status", (event) => {
+      if (trusted(event) && event.sender === mainWindow?.webContents) return updates.snapshot();
+      throw new Error("Unauthorized update request");
+    });
+    ipcMain.handle("bou:update-action", (event, action) => {
+      if (trusted(event) && event.sender === mainWindow?.webContents && ["check", "download", "cancel", "install"].includes(action)) return updates.action(action);
+      throw new Error("Unauthorized update request");
+    });
   });
   app.on("window-all-closed", () => app.quit());
 }

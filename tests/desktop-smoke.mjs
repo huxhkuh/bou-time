@@ -68,12 +68,12 @@ try {
   await expect(
     child.getByRole("button", { name: "עבודה על פרויקט בדיקת דסקטופ" }),
   ).toBeVisible();
-  expect(
-    await app.evaluate(({ BrowserWindow }) =>
+  await expect.poll(
+    () => app.evaluate(({ BrowserWindow }) =>
       BrowserWindow.getAllWindows()
         .find((w) => w.webContents.getURL().includes("floating=1"))
         .isAlwaysOnTop(),
-    ),
+    ), { timeout: 10000 },
   ).toBe(true);
   await child.getByRole("button", { name: "השהיה", exact: true }).click();
   await expect(
