@@ -1,9 +1,10 @@
 // Only the main process owns the updater. Renderer messages cannot set a feed,
 // executable path or installation arguments.
-function createUpdates({ updater, version, unavailable = null, publish, confirmInstall }) {
+function createUpdates({ updater, version, unavailable = null, publish, confirmInstall, validateUpdate, verifyDownloaded }) {
   let status = { phase: unavailable ? "unavailable" : "idle", currentVersion: version, reason: unavailable, revision: 0 };
   let busy = false;
   let token;
+  let identity;
   const set = (next) => {
     status = { currentVersion: version, revision: status.revision + 1, ...next };
     publish({ ...status });
@@ -47,6 +48,7 @@ function createUpdates({ updater, version, unavailable = null, publish, confirmI
           const result = await updater.checkForUpdates();
           token = result?.cancellationToken;
           if (result?.isUpdateAvailable) {
+            identity = validateUpdate(result.updateInfo);
             set({ phase: "available", version: result.updateInfo.version });
           } else set({ phase: "current" });
         } else if (action === "download") {
@@ -56,6 +58,8 @@ function createUpdates({ updater, version, unavailable = null, publish, confirmI
           if (token?.cancelled) set({ phase: "cancelled" });
           else set({ phase: "ready", version: nextVersion });
         } else if (await confirmInstall()) {
+          set({ phase: "verifying", version: status.version });
+          await verifyDownloaded(identity);
           set({ phase: "installing", version: status.version });
           // electron-updater 6: install silently, then reopen the application.
           updater.quitAndInstall(true, true);

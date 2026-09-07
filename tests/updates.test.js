@@ -14,7 +14,7 @@ function setup(extra = {}) {
     quitAndInstall: (silent, restart) => { assert.equal(silent, true); assert.equal(restart, true); installs++; },
   }, extra);
   const history = [];
-  const controller = createUpdates({ updater, version: "1.4.0", publish: (s) => history.push(s), confirmInstall: async () => true });
+  const controller = createUpdates({ updater, version: "1.4.0", publish: (s) => history.push(s), confirmInstall: async () => true, validateUpdate: (info) => info, verifyDownloaded: async () => {} });
   return { controller, updater, token, history, calls: () => ({ checks, downloads, installs }) };
 }
 test("updates require an explicit check, download and confirmed install; ordinary exit never installs", async () => {
@@ -66,7 +66,7 @@ test("declining restart keeps the downloaded update ready; invalid actions and p
   u.checkForUpdates = async () => ({ isUpdateAvailable: true, updateInfo: { version: "2.0.0" } });
   u.downloadUpdate = async () => [];
   u.quitAndInstall = () => installs++;
-  const c = createUpdates({ updater: u, version: "1.4.0", publish() {}, confirmInstall: async () => false });
+  const c = createUpdates({ updater: u, version: "1.4.0", publish() {}, confirmInstall: async () => false, validateUpdate: (info) => info, verifyDownloaded: async () => {} });
   await c.action("check"); await c.action("download"); await c.action("install");
   await c.action("https://evil.invalid");
   assert.equal(c.snapshot().phase, "ready"); assert.equal(installs, 0);

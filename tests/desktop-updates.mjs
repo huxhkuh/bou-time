@@ -28,7 +28,7 @@ const run = (file, args, options = {}) => new Promise((resolve, reject) => {
   child.on("error", reject); child.on("exit", (code) => code === 0 ? resolve() : reject(Error(`Process failed: ${code}`)));
 });
 const hash = async (file) => createHash("sha512").update(await fs.readFile(file)).digest("base64");
-const payload = path.join(root, "9.0.1", "QA-9.0.1-x64-Setup.exe");
+const payload = path.join(root, "9.0.1", "Bou-Time-9.0.1-x64-Setup.exe");
 const fullSize = (await fs.stat(payload)).size;
 let mode = "current", payloadBytes = 0, ranges = 0;
 const server = http.createServer(async (req, res) => {
@@ -41,7 +41,7 @@ const server = http.createServer(async (req, res) => {
       if (mode === "bad-hash") metadata = metadata.replace(/sha512: .+/g, `sha512: ${Buffer.alloc(64).toString("base64")}`);
       res.end(metadata); return;
     }
-    if (!/^QA-9\.0\.[01]-x64-Setup\.exe(\.blockmap)?$/.test(name)) { res.writeHead(404); res.end(); return; }
+    if (!/^Bou-Time-9\.0\.[01]-x64-Setup\.exe(\.blockmap)?$/.test(name)) { res.writeHead(404); res.end(); return; }
     const v = name.includes("9.0.0") ? "9.0.0" : "9.0.1";
     const file = path.join(root, v, name);
     const stat = await fs.stat(file);
@@ -80,8 +80,8 @@ const section = () => page.locator(".desktop-updates");
 const check = () => section().getByRole("button", { name: "בדיקת עדכונים" }).click();
 const download = () => section().getByRole("button", { name: "הורדת העדכון" }).click();
 try {
-  await run(path.join(root, "9.0.0", "QA-9.0.0-x64-Setup.exe"), ["/S", "/currentuser", `/D=${installDir}`], { env });
-  expect(await hash(path.join(descriptor.cache, "installer.exe"))).toBe(await hash(path.join(root, "9.0.0", "QA-9.0.0-x64-Setup.exe")));
+  await run(path.join(root, "9.0.0", "Bou-Time-9.0.0-x64-Setup.exe"), ["/S", "/currentuser", `/D=${installDir}`], { env });
+  expect(await hash(path.join(descriptor.cache, "installer.exe"))).toBe(await hash(path.join(root, "9.0.0", "Bou-Time-9.0.0-x64-Setup.exe")));
   console.log("QA installation and seeded cache verified");
   await launch();
   await check(); await expect(section()).toContainText("אתה משתמש בגרסה העדכנית");
@@ -139,6 +139,18 @@ try {
   expect(payloadBytes).toBeGreaterThanOrEqual(fullSize);
   await fs.rename(cacheSaved, cacheInstaller);
   console.log("Cache reuse, corrupt hash rejection and full-download fallback verified");
+  const installFile = await app.evaluate(({ app }) => process.getBuiltinModule("module").createRequire(app.getAppPath() + "/package.json")("electron-updater").autoUpdater.installerPath);
+  expect(installFile.startsWith(descriptor.cache + path.sep)).toBe(true);
+  const changedFile = await fs.open(installFile, "r+");
+  try { await changedFile.write(Buffer.from([0]), 0, 1, 0); } finally { await changedFile.close(); }
+  await app.evaluate(({ dialog }) => { dialog.showMessageBox = async () => ({ response: 1 }); });
+  await section().getByRole("button", { name: "התקנה והפעלה מחדש" }).click();
+  await expect(section()).toContainText("העדכון לא הושלם", { timeout: 30000 });
+  expect(await app.evaluate(({ app }) => app.getVersion())).toBe("9.0.0");
+  await fs.copyFile(payload, installFile);
+  await check(); await download();
+  await expect(section()).toContainText("העדכון מוכן להתקנה", { timeout: 30000 });
+  console.log("Installer modified after download was rejected before execution");
   await app.evaluate(({ dialog }) => { dialog.showMessageBox = async () => ({ response: 0 }); });
   await section().getByRole("button", { name: "התקנה והפעלה מחדש" }).click();
   await expect(section().getByRole("button", { name: "התקנה והפעלה מחדש" })).toBeEnabled();
@@ -164,7 +176,7 @@ try {
   expect(await readData()).toEqual(before);
   await check(); await expect(section()).toContainText("אתה משתמש בגרסה העדכנית");
   expect(errors).toEqual([]);
-  await fs.writeFile(path.join(root, "result.json"), JSON.stringify({ passed: true, delta, checks: ["real cache seeded by NSIS", "no update", "network error", "cancel/retry", "differential SHA-512 verified", "normal exit does not install", "ready download reused after restart without payload transfer", "corrupt download rejected", "missing cache falls back to full download", "defer restart", "real NSIS update and automatic relaunch", "client/project/task/running timer unchanged"] }, null, 2));
+  await fs.writeFile(path.join(root, "result.json"), JSON.stringify({ passed: true, delta, checks: ["real cache seeded by NSIS", "no update", "network error", "cancel/retry", "differential SHA-512 verified", "normal exit does not install", "ready download reused after restart without payload transfer", "corrupt download rejected", "missing cache falls back to full download", "installer modified after download rejected before execution", "defer restart", "real NSIS update and automatic relaunch", "client/project/task/running timer unchanged"] }, null, 2));
   console.log(JSON.stringify({ passed: true, delta, root }));
 } finally {
   if (app) await app.close();

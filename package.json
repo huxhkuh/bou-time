@@ -1,6 +1,6 @@
 {
   "name": "bou-time",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -32,6 +32,14 @@
   "description": "Hebrew personal project time tracker",
   "author": "Temura",
   "build": {
+    "electronFuses": {
+      "runAsNode": false,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true,
+      "grantFileProtocolExtraPrivileges": false
+    },
     "publish": [{ "provider": "github", "owner": "huxhkuh", "repo": "bou-time", "releaseType": "release" }],
     "appId": "il.bou.time",
     "productName": "תמורה",

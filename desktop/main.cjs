@@ -10,6 +10,7 @@ const {
 const { readFile } = require("node:fs/promises");
 const path = require("node:path");
 const { createUpdates } = require("./updates.cjs");
+const { appURL, updateIdentity, verifyInstaller } = require("./security.cjs");
 const ORIGIN = "bou://app";
 const root = path.join(__dirname, "..", "dist");
 app.setName("תמורה");
@@ -26,7 +27,7 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 const csp =
-  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'";
+  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'";
 const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -42,9 +43,8 @@ function trusted(event) {
     [mainWindow, floatingWindow].some(
       (w) => w && !w.isDestroyed() && w.webContents === event.sender,
     ) &&
-    event.senderFrame === event.sender.mainFrame &&
-    new URL(event.senderFrame.url).protocol === "bou:" &&
-    new URL(event.senderFrame.url).host === "app"
+    event.senderFrame && event.senderFrame === event.sender.mainFrame &&
+    appURL(event.senderFrame.url)
   );
 }
 function secureWindow(options) {
@@ -65,9 +65,13 @@ function secureWindow(options) {
   win.removeMenu();
   win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   win.webContents.on("will-navigate", (event, url) => {
-    const target = new URL(url);
-    if (target.protocol !== "bou:" || target.host !== "app")
-      event.preventDefault();
+    if (!appURL(url)) event.preventDefault();
+  });
+  win.webContents.on("will-frame-navigate", (event) => {
+    if (!event.isMainFrame || !appURL(event.url)) event.preventDefault();
+  });
+  win.webContents.on("will-redirect", (event, url) => {
+    if (!appURL(url)) event.preventDefault();
   });
   win.webContents.on("will-attach-webview", (event) => event.preventDefault());
   win.once("ready-to-show", () => win.show());
@@ -190,6 +194,8 @@ else {
     if (updater) updater.logger = null;
     const updates = createUpdates({
       updater, version: app.getVersion(), unavailable,
+      validateUpdate: updateIdentity,
+      verifyDownloaded: (identity) => verifyInstaller(updater.installerPath, identity),
       publish: (status) => {
         if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("bou:update-status", status);
       },

@@ -14,11 +14,13 @@ for (const version of ["9.0.0", "9.0.1"]) {
   const config = structuredClone(pkg.build);
   Object.assign(config, {
     extends: null, appId: `il.temura.${name}`, productName: "Temura Update QA", executableName: "Temura Update QA",
+    // Playwright's main-process inspector is available only in these QA builds.
+    electronFuses: { ...config.electronFuses, enableNodeCliInspectArguments: true },
     npmRebuild: false, electronDist: "node_modules/electron/dist", extraMetadata: { name, version, main: "qa-entry.cjs" },
     files: [...config.files, { from: root, to: ".", filter: ["qa-entry.cjs"] }],
     publish: [{ provider: "generic", url: "http://127.0.0.1:9/" }],
     directories: { output: path.join(root, version) },
-    nsis: { ...config.nsis, guid, createDesktopShortcut: false, createStartMenuShortcut: false, shortcutName: "Temura Update QA", artifactName: "QA-${version}-x64-Setup.exe" },
+    nsis: { ...config.nsis, guid, createDesktopShortcut: false, createStartMenuShortcut: false, shortcutName: "Temura Update QA", artifactName: "Bou-Time-${version}-x64-Setup.exe" },
   });
   const configPath = path.join(root, `builder-${version}.json`);
   await fs.writeFile(configPath, JSON.stringify(config, null, 2));

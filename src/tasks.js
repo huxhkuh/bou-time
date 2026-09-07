@@ -3,12 +3,13 @@ const validTitle = (title) =>
 const validId = (id) => typeof id === "string" && id.length > 0 && id.length <= 100;
 
 export function validateTasks(tasks, projects) {
+  const projectIds = new Set(projects.map((p) => p.id));
   // Backups created before checklists have no tasks field.
   if (tasks === undefined) return [];
   if (
     !Array.isArray(tasks) || tasks.length >= 100000 ||
     !tasks.every((t) => t && validId(t.id) && validTitle(t.title) &&
-      typeof t.completed === "boolean" && projects.some((p) => p.id === t.projectId)) ||
+      typeof t.completed === "boolean" && projectIds.has(t.projectId)) ||
     new Set(tasks.map((t) => t.id)).size !== tasks.length
   ) throw Error("רשימת המשימות בגיבוי אינה תקינה או מכילה מזהים כפולים.");
   return tasks;

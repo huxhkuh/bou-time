@@ -1,4 +1,5 @@
 import { validateTasks } from "./tasks.js";
+import { checkBackupTree } from "./backup-safety.js";
 export const TZ = "Asia/Jerusalem";
 export const HOUR = 3600000;
 export const fresh = () => ({
@@ -206,6 +207,7 @@ const validPrice = (p) =>
   ["none", "hourly", "fixed"].includes(p.type) &&
   (p.type === "none" ? p.amount === null : finite(p.amount) && p.amount >= 0);
 export function validateBackup(input) {
+  checkBackupTree(input);
   const s = structuredClone(input);
   if (
     !s ||
@@ -216,17 +218,19 @@ export function validateBackup(input) {
   )
     throw Error("קובץ הגיבוי אינו בפורמט נתמך.");
   for (const k of ["clients", "projects", "entries"])
-    if (new Set(s[k].map((x) => x.id)).size !== s[k].length)
+    if (s[k].some((x) => !x || typeof x !== "object" || Array.isArray(x)) || new Set(s[k].map((x) => x.id)).size !== s[k].length)
       throw Error("הגיבוי מכיל מזהים כפולים.");
   if (!s.clients.every((c) => validId(c.id) && isStr(c.name) && c.name.trim()))
     throw Error("פרטי הלקוחות בגיבוי אינם תקינים.");
+  const clients = new Set(s.clients.map((c) => c.id));
+  const projects = new Set(s.projects.map((p) => p.id));
   if (
     !s.projects.every(
       (p) =>
         validId(p.id) &&
         isStr(p.name) &&
         p.name.trim() &&
-        s.clients.some((c) => c.id === p.clientId) &&
+        clients.has(p.clientId) &&
         /^#[0-9a-f]{6}$/i.test(p.color) &&
         isStr(p.description) &&
         typeof p.archived === "boolean" &&
@@ -241,7 +245,7 @@ export function validateBackup(input) {
     ss.length < 100000 &&
     ss.every(
       (a, i) =>
-        finite(a.start) &&
+        a && finite(a.start) &&
         finite(a.end) &&
         a.start >= 0 &&
         a.end > a.start &&
@@ -250,11 +254,11 @@ export function validateBackup(input) {
         (i === 0 || a.start >= ss[i - 1].end),
     );
   const common = (e) =>
-    validId(e.id) &&
-    s.projects.some((p) => p.id === e.projectId) &&
+    e && validId(e.id) &&
+    projects.has(e.projectId) &&
     isStr(e.description) &&
     validPrice(e.pricing) &&
-    finite(e.createdAt) &&
+    finite(e.createdAt) && e.createdAt >= 0 && e.createdAt < 4102444800000 &&
     validSegments(e.segments);
   if (!s.entries.every((e) => common(e) && e.segments.length))
     throw Error("רישומי הזמן בגיבוי אינם תקינים.");
@@ -264,6 +268,7 @@ export function validateBackup(input) {
       !(
         s.timer.runningSince === null ||
         (finite(s.timer.runningSince) &&
+          s.timer.runningSince < 4102444800000 &&
           s.timer.runningSince >= s.timer.createdAt &&
           s.timer.runningSince >= (s.timer.segments.at(-1)?.end ?? 0))
       ) ||
@@ -276,13 +281,15 @@ export function mergeBackup(s, input) {
   const backup = validateBackup(input);
   s.tasks ??= [];
   // Preserve local records on ID conflicts. A backup cannot restart a running timer.
-  for (const k of ["clients", "projects", "entries", "tasks"])
+  for (const k of ["clients", "projects", "entries", "tasks"]) {
+    const existing = new Set(s[k].map((x) => x.id));
     for (const x of backup[k])
       if (
-        !s[k].some((y) => y.id === x.id) &&
+        !existing.has(x.id) &&
         !(k === "entries" && s.timer?.id === x.id)
       )
         s[k].push(x);
+  }
   if (
     backup.timer &&
     !s.timer &&
@@ -295,7 +302,7 @@ export function csv(entries, s) {
   const safe = (x) =>
     '"' +
     String(x ?? "")
-      .replace(/^[=+@\-\t\r]/, "'$&")
+      .replace(/^(?:\s*[=+@\-]|[\t\r\n])/, "'$&")
       .replaceAll('"', '""') +
     '"';
   const rows = [

@@ -13,6 +13,7 @@ const labels = {
   cancelled: "ההורדה בוטלה. אפשר לבדוק ולהוריד שוב כשתרצה.",
   ready: "העדכון מוכן להתקנה. מתי שנוח לך.",
   installing: "מתקינים את העדכון ופותחים מחדש…",
+  verifying: "בודקים שוב את תקינות קובץ העדכון לפני ההתקנה…",
 };
 export default function DesktopUpdates({ notify }) {
   const [status, setStatus] = useState(null);
