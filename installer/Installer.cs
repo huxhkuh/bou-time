@@ -60,15 +60,12 @@ namespace BouInstaller
         public static string InstallDirectory()
         {
             // Keep an existing per-user install location when updating.
-            using (var root = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall"))
+            // electron-builder's stable GUID for il.bou.time. NSIS stores this
+            // separately from the uninstall entry (whose name includes a version).
+            using (var key = Registry.CurrentUser.OpenSubKey(@"Software\3ead69c5-dfef-56f1-9730-ce3cff6c6279"))
             {
-                if (root != null) foreach (var name in root.GetSubKeyNames())
-                    using (var key = root.OpenSubKey(name))
-                    {
-                        if (key == null || (string)key.GetValue("DisplayName", "") != "Bou Time") continue;
-                        var location = key.GetValue("InstallLocation") as string;
-                        if (!String.IsNullOrWhiteSpace(location) && Path.IsPathRooted(location)) return location;
-                    }
+                var location = key == null ? null : key.GetValue("InstallLocation") as string;
+                if (!String.IsNullOrWhiteSpace(location) && Path.IsPathRooted(location)) return location;
             }
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Bou Time");
         }
