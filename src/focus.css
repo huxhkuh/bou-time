@@ -1,0 +1,571 @@
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.desktop-floating .focus-top {
+  -webkit-app-region: drag;
+  user-select: none;
+}
+.desktop-floating .focus-top button {
+  -webkit-app-region: no-drag;
+}
+.desktop-floating {
+  min-height: 100dvh;
+  background: #272923;
+}
+.focus-tools {
+  display: flex;
+  gap: 8px;
+}
+.focus-tools .button {
+  font-size: 12px;
+  padding: 9px 12px;
+}
+.pip-body {
+  margin: 0;
+  background: #272923;
+  min-width: 240px;
+}
+.focus-clock {
+  --fg: #f6f3eb;
+  --bg: #272923;
+  --soft: #bfc3b5;
+  --edge: #505548;
+  background: var(--bg);
+  color: var(--fg);
+  padding: 10px 20px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.5;
+}
+.focus-clock.is-light {
+  --fg: #272923;
+  --bg: #f6f3eb;
+  --soft: #656a5d;
+  --edge: #d8dbce;
+}
+.focus-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.focus-brand {
+  font-size: 25px;
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: -1.5px;
+}
+.focus-brand > span {
+  color: #d5784e;
+}
+.focus-state {
+  color: var(--soft);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.focus-state i {
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  background: #9b9f90;
+}
+.focus-state i.is-running {
+  background: #b8d795;
+}
+.focus-top-actions {
+  display: flex;
+  margin-right: auto;
+  gap: 3px;
+}
+.focus-top-actions button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: transparent;
+  color: var(--soft);
+  border: 0;
+  border-radius: 6px;
+}
+.focus-top-actions button:hover {
+  background: #88888820;
+  color: var(--fg);
+}
+.focus-clock button:focus-visible,
+.focus-clock select:focus-visible {
+  outline: 2px solid #e8986e;
+  outline-offset: 3px;
+}
+.focus-project h2 {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+  font-weight: 500;
+}
+.focus-project h2 bdi {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.focus-project p {
+  font-size: 11px;
+  color: var(--soft);
+  margin: 3px 0 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.focus-project select {
+  width: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  padding: 7px;
+  font-size: 12px;
+  min-width: 0;
+}
+.focus-digits {
+  font-family: Consolas, "Cascadia Code", monospace;
+  font-size: clamp(34px, 14vw, 64px);
+  letter-spacing: -2px;
+  line-height: 1.25;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  margin: 8px 0 10px;
+}
+.focus-controls {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+}
+.focus-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 8px 13px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.focus-primary {
+  color: #fff;
+  background: #b94f2a;
+  border: 1px solid #b94f2a;
+}
+.focus-primary:hover {
+  background: #a14222;
+}
+.focus-secondary {
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--edge);
+}
+.focus-secondary:hover {
+  background: #88888820;
+}
+.focus-caption {
+  font-size: 10px;
+  color: var(--soft);
+  text-align: center;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+.focus-warning {
+  font-size: 11px;
+  color: #eeb391;
+  text-align: center;
+  margin-top: 10px;
+}
+.is-light .focus-warning {
+  color: #934322;
+}
+.focus-dialog {
+  width: min(880px, calc(100vw - 32px));
+  border: 0;
+  background: #272923;
+}
+.focus-dialog > .dialog-body {
+  padding: 0;
+}
+.focus-dialog > .dialog-body > .section-head {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.focus-dialog .is-large {
+  min-height: min(680px, 82dvh);
+  padding: 32px 42px;
+}
+.is-large .focus-top {
+  margin-bottom: auto;
+}
+.is-large .focus-brand {
+  font-size: 37px;
+}
+.is-large .focus-state {
+  font-size: 13px;
+}
+.is-large .focus-project {
+  margin-top: 45px;
+}
+.is-large .focus-project h2 {
+  font-size: 27px;
+  white-space: normal;
+}
+.is-large .focus-project p {
+  font-size: 15px;
+  margin-top: 8px;
+}
+.is-large .focus-project select {
+  max-width: 360px;
+  display: block;
+  margin: auto;
+  padding: 12px;
+  font-size: 15px;
+}
+.is-large .focus-digits {
+  font-size: clamp(45px, 10vw, 112px);
+  margin: 24px 0 30px;
+  letter-spacing: -4px;
+}
+.is-large .focus-controls button {
+  padding: 13px 23px;
+  font-size: 15px;
+}
+.is-large .focus-caption {
+  margin-top: auto;
+  padding-top: 35px;
+  font-size: 12px;
+}
+.is-large .focus-warning {
+  font-size: 14px;
+}
+.focus-dialog .focus-top-actions button {
+  width: 36px;
+  height: 36px;
+}
+@media (max-width: 850px) {
+  .page-header {
+    flex-wrap: wrap;
+  }
+  .page-actions {
+    justify-content: flex-start;
+  }
+  .focus-dialog .is-large {
+    padding: 22px;
+    min-height: 70dvh;
+  }
+}
+@media (max-width: 600px) {
+  .page-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .page-actions > .button,
+  .focus-tools .button {
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+  .focus-tools {
+    gap: 6px;
+  }
+  .is-large .focus-project h2 {
+    font-size: 22px;
+  }
+  .is-large .focus-top {
+    gap: 8px;
+  }
+  .is-large .focus-state {
+    font-size: 11px;
+  }
+  .focus-clock .focus-top-actions {
+    flex-shrink: 0;
+  }
+}
+@media (max-height: 230px) {
+  .focus-clock:not(.is-large) {
+    padding: 8px 16px;
+  }
+  .focus-clock:not(.is-large) .focus-top {
+    margin-bottom: 6px;
+  }
+  .focus-clock:not(.is-large) .focus-digits {
+    margin: 4px 0 7px;
+    font-size: 38px;
+  }
+  .focus-clock:not(.is-large) .focus-project p,
+  .focus-clock:not(.is-large) .focus-caption {
+    display: none;
+  }
+}
+
+.focus-dialog > .dialog-body > .section-head .icon-button {
+  display: none;
+}
+
+/* Compact floating switcher: independent of the full-screen focus layout. */
+.compact-clock {
+  --fg: #f6f3eb;
+  --bg: #272923;
+  --soft: #c2c5b8;
+  --edge: #4a5043;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: 12px;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+}
+.compact-clock.is-light {
+  --fg: #292a25;
+  --bg: #f6f3eb;
+  --soft: #626658;
+  --edge: #dcded1;
+}
+.compact-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 28px;
+  margin-bottom: 6px;
+}
+.desktop-floating .compact-header {
+  -webkit-app-region: drag;
+  user-select: none;
+}
+.desktop-floating .compact-header button {
+  -webkit-app-region: no-drag;
+}
+.compact-brand {
+  font-size: 22px;
+  font-weight: 850;
+  letter-spacing: -1.5px;
+}
+.compact-brand > span {
+  color: #d5784e;
+}
+.compact-tools,
+.compact-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.compact-clock button {
+  color: inherit;
+}
+.compact-tools button,
+.compact-actions button {
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border-radius: 6px;
+  color: var(--soft);
+  flex-shrink: 0;
+}
+.compact-tools svg,
+.compact-actions svg {
+  width: 16px;
+  height: 16px;
+}
+.compact-tools button:hover,
+.compact-actions button:hover {
+  background: #88888825;
+  color: var(--fg);
+}
+.compact-clock button:focus-visible {
+  outline: 2px solid #e8986e;
+  outline-offset: -2px;
+}
+.compact-measure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-direction: row-reverse;
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+.compact-measure .focus-digits {
+  font-family: "Heebo Variable", sans-serif;
+  font-size: 40px;
+  font-weight: 400;
+  letter-spacing: -1px;
+  margin: 0;
+  line-height: 1.25;
+}
+.compact-actions .compact-stop {
+  color: #f3b293;
+  background: #a84a2a30;
+}
+.is-light .compact-actions .compact-stop {
+  color: #964022;
+}
+.compact-projects {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--edge) transparent;
+}
+.compact-project {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+  width: 100%;
+  min-height: 42px;
+  text-align: right;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: #8888880d;
+  padding: 6px 9px;
+}
+.compact-project:hover {
+  background: #88888822;
+}
+.compact-project.is-active {
+  background: #88888822;
+  border-color: var(--edge);
+}
+.compact-project-dot {
+  width: 5px;
+  height: 21px;
+  border-radius: 3px;
+  background: var(--project-color);
+  flex-shrink: 0;
+}
+.compact-project-name {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
+}
+.compact-project-name bdi {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.compact-project-name small {
+  display: block;
+  color: var(--soft);
+}
+.compact-project-name small bdi {
+  font-size: 10px;
+}
+.compact-row-play,
+.compact-running svg {
+  width: 12px;
+  height: 12px;
+  color: var(--soft);
+  flex-shrink: 0;
+}
+.compact-running {
+  display: grid;
+  place-items: center;
+  width: 12px;
+  flex-shrink: 0;
+}
+.compact-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b8d795;
+}
+.is-light .compact-live {
+  background: #487336;
+}
+.compact-empty,
+.compact-warning,
+.compact-error {
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 5px 0 0;
+  flex-shrink: 0;
+}
+.compact-empty {
+  color: var(--soft);
+}
+.compact-warning,
+.compact-error {
+  color: #f2b899;
+}
+.is-light .compact-warning,
+.is-light .compact-error {
+  color: #934322;
+}
+.compact-clock.is-tiny {
+  padding: 7px 8px;
+}
+.is-tiny .compact-header {
+  height: 24px;
+  margin-bottom: 3px;
+}
+.is-tiny .compact-brand {
+  font-size: 18px;
+}
+.is-tiny .compact-tools button {
+  width: 24px;
+  height: 24px;
+}
+.is-tiny .compact-tools svg {
+  width: 13px;
+  height: 13px;
+}
+.is-tiny .compact-measure {
+  margin-bottom: 5px;
+  gap: 5px;
+}
+.is-tiny .focus-digits {
+  font-size: 29px;
+  letter-spacing: -0.6px;
+}
+.is-tiny .compact-actions button {
+  width: 27px;
+  height: 27px;
+}
+.is-tiny .compact-project {
+  min-height: 30px;
+  padding: 5px 7px;
+  gap: 7px;
+  border-radius: 5px;
+}
+.is-tiny .compact-project-name bdi {
+  font-size: 11px;
+}
+.is-tiny .compact-project-dot {
+  height: 16px;
+  width: 4px;
+}
+.pip-body {
+  min-width: 220px;
+}

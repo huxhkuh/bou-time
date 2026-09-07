@@ -1,0 +1,17 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+screenshots/
+QA.md
+work/
+.env
+.env.*
+*.log
+*.zip
+*.exe
+*.pdb
+*.blockmap
+windows/
+.DS_Store
+docs/USAGE-he.md

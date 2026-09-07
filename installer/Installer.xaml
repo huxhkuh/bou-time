@@ -1,0 +1,64 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="בואו · התקנה" Width="780" Height="520" ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen" Background="#F7F4EC" FontFamily="Segoe UI"
+        FlowDirection="RightToLeft" Foreground="#242522">
+  <Window.Resources>
+    <Style TargetType="Button">
+      <Setter Property="Cursor" Value="Hand"/><Setter Property="FontSize" Value="15"/>
+      <Setter Property="Padding" Value="24,13"/><Setter Property="Background" Value="#AD4629"/>
+      <Setter Property="Foreground" Value="White"/><Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+        <Border x:Name="surface" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+          <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="surface" Property="Opacity" Value="0.88"/></Trigger>
+          <Trigger Property="IsEnabled" Value="False"><Setter TargetName="surface" Property="Opacity" Value="0.45"/></Trigger>
+          <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="surface" Property="BorderThickness" Value="2"/><Setter TargetName="surface" Property="BorderBrush" Value="#242522"/></Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate></Setter.Value></Setter>
+    </Style>
+  </Window.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="248"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Background="#252823" Padding="30,30,30,28">
+      <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <StackPanel><TextBlock Text="בואו" Foreground="#FFF8EA" FontSize="48" FontWeight="Bold"/>
+          <TextBlock Text="זמן לעבוד טוב." Foreground="#CECFBF" FontSize="15" Margin="0,0,0,24"/>
+          <Border Height="2" Background="#C86742" Width="38" HorizontalAlignment="Right"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+          <TextBlock Text="פחות התעסקות.&#10;יותר זמן ליצירה." Foreground="#FFF8EA" FontSize="24" FontWeight="SemiBold" LineHeight="36"/>
+          <TextBlock Text="הפרויקטים, השעות והקצב שלך.&#10;במקום אחד, על המחשב שלך." TextWrapping="Wrap" Foreground="#CECFBF" FontSize="14" LineHeight="24" Margin="0,18,0,0"/>
+        </StackPanel>
+        <TextBlock Grid.Row="2" Text="WINDOWS 10 / 11 · 64 BIT" Foreground="#CECFBF" FontSize="10" FlowDirection="LeftToRight"/>
+      </Grid>
+    </Border>
+    <Grid Grid.Column="1" Margin="36,32,36,26">
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <TextBlock Text="בואו מתחילים" Foreground="#AD4629" FontSize="12" FontWeight="SemiBold"/>
+      <StackPanel Grid.Row="1" Margin="0,14,0,0">
+        <TextBlock x:Name="Heading" Text="הזמן שלך. מסודר." FontSize="30" FontWeight="SemiBold"/>
+        <TextBlock x:Name="Description" Text="עוד רגע, וכל העבודה שלך מקבלת מקום. המתקין יוריד את הגרסה העדכנית מ־GitHub ויתקין אותה בחשבון Windows שלך." FontSize="14" TextWrapping="Wrap" LineHeight="23" Margin="0,12,0,0"/>
+      </StackPanel>
+      <StackPanel Grid.Row="2" VerticalAlignment="Center" Margin="0,16,0,16">
+        <Border Background="#EDEADF" CornerRadius="8" Padding="16">
+          <StackPanel><TextBlock x:Name="Status" Text="מוכנים כשנוח לך" FontSize="14" FontWeight="SemiBold" AutomationProperties.AutomationId="Status"/>
+            <TextBlock x:Name="Detail" Text="ללא מנוי · ללא הרשאות מנהל · הנתונים נשארים אצלך" TextWrapping="Wrap" Foreground="#626359" FontSize="12" LineHeight="20" Margin="0,6,0,0" AutomationProperties.AutomationId="Detail"/>
+            <ProgressBar x:Name="Progress" Height="5" Margin="0,14,0,0" Foreground="#AD4629" Background="#D7D8CB" BorderThickness="0" Visibility="Collapsed" FlowDirection="LeftToRight"/>
+          </StackPanel>
+        </Border>
+        <TextBlock x:Name="Note" Text="נדרש חיבור לאינטרנט להתקנה. לאחר מכן אפשר לעבוד גם ללא חיבור." TextWrapping="Wrap" Foreground="#626359" FontSize="12" LineHeight="20" Margin="0,12,0,0"/>
+      </StackPanel>
+      <StackPanel Grid.Row="3">
+        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <Button x:Name="Primary" Content="התקנת בואו" AutomationProperties.AutomationId="InstallButton" IsDefault="True"/>
+          <Button x:Name="Secondary" Grid.Column="1" Content="סגירה" AutomationProperties.AutomationId="CancelButton" Background="Transparent" Foreground="#626359" Padding="18,13" Margin="8,0,0,0"/>
+        </Grid>
+        <TextBlock Text="קובץ התקנה קטן. כל מה שצריך יורד ישירות מהמאגר הרשמי." TextWrapping="Wrap" Foreground="#626359" FontSize="10" Margin="0,14,0,0"/>
+      </StackPanel>
+    </Grid>
+  </Grid>
+</Window>
