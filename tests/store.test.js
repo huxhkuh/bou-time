@@ -3,6 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { change, read } from "../src/store.js";
 import { timerAction, fresh } from "../src/domain.js";
+import { taskAction } from "../src/tasks.js";
 test("IndexedDB serializes simultaneous tab-like mutations; one start and one save", async () => {
   await change((s) =>
     Object.assign(s, {
@@ -53,4 +54,19 @@ test("failed transaction rolls back all writes", async () => {
     }),
   );
   assert.deepEqual(await read(), before);
+});
+
+test("concurrent checklist updates preserve each task and unrelated project edits", async () => {
+  await change((s) => { s.projects.push({ id: "checklist-project", name: "פרויקט" }); });
+  await Promise.all(Array.from({ length: 12 }, (_, i) => change((s) => taskAction(s, { type: "add", id: `task-${i}`, projectId: "checklist-project", title: `משימה ${i}` }))));
+  await Promise.all([
+    change((s) => taskAction(s, { type: "complete", id: "task-0", projectId: "checklist-project", completed: true })),
+    change((s) => taskAction(s, { type: "rename", id: "task-0", projectId: "checklist-project", title: "הושלם ונערך", expectedTitle: "משימה 0" })),
+    change((s) => { s.projects.find((p) => p.id === "checklist-project").name = "שם חדש"; }),
+  ]);
+  const s = await read();
+  assert.equal(s.tasks.filter((t) => t.projectId === "checklist-project").length, 12);
+  assert.equal(s.tasks.find((t) => t.id === "task-0").completed, true);
+  assert.equal(s.tasks.find((t) => t.id === "task-0").title, "הושלם ונערך");
+  assert.equal(s.projects.find((p) => p.id === "checklist-project").name, "שם חדש");
 });

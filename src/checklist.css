@@ -1,0 +1,25 @@
+.project-checklist { margin: 18px 0; border: 1px solid var(--line, #dedbd1); border-radius: 12px; background: #f8f6f0; overflow: hidden; }
+.project-checklist summary { display: flex; align-items: center; gap: 8px; padding: 13px 12px; cursor: pointer; font-size: 14px; font-weight: 600; list-style: none; }
+.project-checklist summary::-webkit-details-marker { display: none; }
+.project-checklist summary::after { content: "+"; margin-inline-start: 4px; font-size: 18px; }
+.project-checklist[open] summary::after { content: "−"; }
+.project-checklist summary:focus-visible { outline: 2px solid #a44728; outline-offset: -3px; border-radius: 10px; }
+.checklist-count { margin-inline-start: auto; font-size: 11px; font-weight: 400; color: #64675d; }
+.project-checklist > progress { display: block; width: calc(100% - 24px); height: 4px; margin: 0 12px 10px; accent-color: #7c895f; }
+.checklist-body { padding: 0 12px 12px; }
+.checklist-empty { color: #64675d; font-size: 12px; line-height: 1.8; margin: 0 0 12px; }
+.checklist-items { list-style: none; padding: 0; margin: 0 0 10px; max-height: 330px; overflow-y: auto; }
+.checklist-items li { border-bottom: 1px solid #e4e1d8; }
+.checklist-row, .checklist-edit, .checklist-add { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.checklist-row { padding: 5px 0; }
+.checklist-row label { display: flex; flex: 1; min-width: 0; gap: 9px; align-items: flex-start; cursor: pointer; padding: 7px 0; font-size: 13px; }
+.checklist-row label span { overflow-wrap: anywhere; }
+.checklist-row input[type="checkbox"] { width: 17px; height: 17px; flex-shrink: 0; margin: 2px 0 0; accent-color: #a44728; }
+.checklist-items .is-complete .checklist-row label span { text-decoration: line-through; color: #707467; }
+.checklist-row .icon-button, .checklist-edit .icon-button { flex-shrink: 0; width: 30px; height: 32px; padding: 5px; }
+.checklist-add input, .checklist-edit input { min-width: 0; width: 100%; flex: 1; font: inherit; font-size: 13px; padding: 10px; border: 1px solid #dcd7cb; border-radius: 8px; background: #fffefa; color: #272923; }
+.checklist-add .button { padding: 10px; flex-shrink: 0; background: #ede6da; color: #81361e; }
+.checklist-edit { padding: 8px 0; }
+.checklist-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0 12px; font-size: 12px; }
+.checklist-confirm button { padding: 5px 8px; background: #efe8df; color: #81361e; border: 1px solid #d5c4b8; border-radius: 5px; cursor: pointer; }
+.project-checklist .error { font-size: 12px; overflow-wrap: anywhere; }

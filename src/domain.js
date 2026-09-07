@@ -1,9 +1,11 @@
+import { validateTasks } from "./tasks.js";
 export const TZ = "Asia/Jerusalem";
 export const HOUR = 3600000;
 export const fresh = () => ({
   version: 1,
   clients: [],
   projects: [],
+  tasks: [],
   entries: [],
   timer: null,
   revision: 0,
@@ -233,6 +235,7 @@ export function validateBackup(input) {
     )
   )
     throw Error("פרטי הפרויקטים בגיבוי אינם תקינים.");
+  s.tasks = validateTasks(s.tasks, s.projects);
   const validSegments = (ss) =>
     Array.isArray(ss) &&
     ss.length < 100000 &&
@@ -271,8 +274,9 @@ export function validateBackup(input) {
 }
 export function mergeBackup(s, input) {
   const backup = validateBackup(input);
+  s.tasks ??= [];
   // Preserve local records on ID conflicts. A backup cannot restart a running timer.
-  for (const k of ["clients", "projects", "entries"])
+  for (const k of ["clients", "projects", "entries", "tasks"])
     for (const x of backup[k])
       if (
         !s[k].some((y) => y.id === x.id) &&

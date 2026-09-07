@@ -131,7 +131,7 @@ export default function Settings({ state, mutate, notify }) {
             <h3>הגיבוי תקין ומוכן לייבוא</h3>
             <p>
               {pending.clients.length} לקוחות · {pending.projects.length}{" "}
-              פרויקטים · {pending.entries.length} רישומים
+              פרויקטים · {pending.entries.length} רישומים · {pending.tasks.length} משימות
             </p>
             <p className="note">
               פריטים עם מזהה קיים יישמרו כפי שהם. אין דריסה ואין כפילויות. טיימר

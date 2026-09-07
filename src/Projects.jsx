@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Plus, Pencil, Play, Folder, ArrowUpLeft } from "lucide-react";
 import { Button, Dot, Empty } from "./ui.jsx";
 import { duration, hours, money, HOUR, timerSegments } from "./domain.js";
-export default function Projects({ state, now, edit, newProject, start }) {
+import ProjectChecklist from "./ProjectChecklist.jsx";
+export default function Projects({ state, now, edit, newProject, start, mutate }) {
   const [archive, setArchive] = useState(false),
     [query, setQuery] = useState("");
   const projects = state.projects.filter(
@@ -124,6 +125,7 @@ export default function Projects({ state, now, edit, newProject, start }) {
                     />
                   </div>
                 )}
+                <ProjectChecklist project={p} tasks={(state.tasks || []).filter((t) => t.projectId === p.id)} mutate={mutate} />
                 <Button
                   icon={Play}
                   kind="wide"

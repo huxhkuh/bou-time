@@ -25,3 +25,7 @@ The graphical bootstrapper targets .NET Framework 4.x APIs available on supporte
 ## Brand identity and upgrade compatibility
 
 Version 1.2.0 changes the public name to תמורה (Temura). Keep appId, executableName, the bou://app origin, IndexedDB names, AppData path and existing versioned payload filename pattern stable. Existing bootstrapper copies validate that exact payload URL and launch Bou Time.exe. Both bootstrapper download names contain the same newly branded binary; the original name stays available as a compatibility link.
+
+### בדיקת צ׳קליסט ב־Windows
+
+אחרי בנייה ניתן להריץ `node tests/desktop-checklist.mjs`. לבדיקה מול EXE ארוז, הגדירו את משתנה הסביבה `BOU_TEST_EXE` לנתיב קובץ התוכנה. הבדיקה משתמשת בפרופיל נתונים נפרד ובודקת יצירה, סימון, פתיחה מחדש וייצוא וייבוא גיבוי.
