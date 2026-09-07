@@ -1,6 +1,6 @@
 {
   "name": "bou-time",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -29,10 +29,10 @@
   },
   "main": "desktop/main.cjs",
   "description": "Hebrew personal project time tracker",
-  "author": "Bou",
+  "author": "Temura",
   "build": {
     "appId": "il.bou.time",
-    "productName": "Bou Time",
+    "productName": "תמורה",
     "directories": {
       "output": "../windows"
     },
@@ -54,14 +54,15 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "shortcutName": "בואו",
+      "shortcutName": "תמורה",
       "deleteAppDataOnUninstall": false,
       "runAfterFinish": false,
       "artifactName": "Bou-Time-${version}-x64-Setup.exe"
     },
     "portable": {
       "artifactName": "Bou-Time-${version}-x64-Portable.exe"
-    }
+    },
+    "executableName": "Bou Time"
   },
   "homepage": "https://github.com/huxhkuh/bou-time",
   "repository": {

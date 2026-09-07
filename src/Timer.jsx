@@ -77,7 +77,7 @@ export default function Timer({
           </>
         ) : (
           <>
-            <h2>בואו נתחיל משהו טוב.</h2>
+            <h2>מתחילים משהו טוב.</h2>
             {selected ? (
               <div className="timer-fields">
                 <label>

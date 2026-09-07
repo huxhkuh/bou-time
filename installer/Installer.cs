@@ -100,7 +100,7 @@ namespace BouInstaller
             bool first;
             using (var mutex = new Mutex(true, @"Local\BouTimeBootstrapper", out first))
             {
-                if (!first) { MessageBox.Show("מתקין בואו כבר פתוח.", "בואו"); return; }
+                if (!first) { MessageBox.Show("מתקין תמורה כבר פתוח.", "תמורה"); return; }
                 try
                 {
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -109,7 +109,7 @@ namespace BouInstaller
                     installer.CreateWindow();
                     app.Run(installer.window);
                 }
-                catch (Exception) { MessageBox.Show("לא ניתן לפתוח את המתקין. נסה להוריד אותו שוב מעמוד הגרסאות ב־GitHub.", "בואו"); }
+                catch (Exception) { MessageBox.Show("לא ניתן לפתוח את המתקין. נסה להוריד אותו שוב מעמוד הגרסאות ב־GitHub.", "תמורה"); }
             }
         }
 
@@ -131,7 +131,7 @@ namespace BouInstaller
                 if (completed)
                 {
                     try { Process.Start(new ProcessStartInfo(Path.Combine(directory, "Bou Time.exe")) { UseShellExecute = true }); window.Close(); }
-                    catch (Exception) { detail.Text = "לא ניתן לפתוח את האפליקציה. אפשר לפתוח את בואו מתפריט ההתחלה."; }
+                    catch (Exception) { detail.Text = "לא ניתן לפתוח את האפליקציה. אפשר לפתוח את תמורה מתפריט ההתחלה."; }
                 }
                 else await Install();
             };
@@ -164,11 +164,11 @@ namespace BouInstaller
             string scratch = null;
             try
             {
-                if (Payload.IsRunning(directory)) throw new InvalidOperationException("בואו פתוחה. סגור את האפליקציה ונסה שוב; זמן המדידה נשמר.");
+                if (Payload.IsRunning(directory)) throw new InvalidOperationException("תמורה פתוחה. סגור את האפליקציה ונסה שוב; זמן המדידה נשמר.");
                 heading.Text = "מפנים מקום לעבודה טובה.";
                 description.Text = "הגרסה הרשמית בדרך למחשב שלך. נשמור על הנתונים הקיימים גם אם זו התקנה חוזרת.";
                 status.Text = "1 מתוך 3 · בודקים את הגרסה העדכנית";
-                detail.Text = "מתחברים למאגר של בואו ב־GitHub…";
+                detail.Text = "מתחברים למאגר של תמורה ב־GitHub…";
                 progress.Visibility = Visibility.Visible;
                 progress.IsIndeterminate = true;
                 Release release;
@@ -196,7 +196,7 @@ namespace BouInstaller
                             }
                         }
                     }
-                    status.Text = "1 מתוך 3 · מורידים את בואו " + release.version;
+                    status.Text = "1 מתוך 3 · מורידים את תמורה " + release.version;
                     progress.IsIndeterminate = false;
                     progress.Value = 0;
                     scratch = Path.Combine(Path.GetTempPath(), "BouInstall-" + Guid.NewGuid().ToString("N"));
@@ -232,7 +232,7 @@ namespace BouInstaller
                     progress.IsIndeterminate = true;
                     await Task.Run(() => Payload.Verify(payload, release));
                     token.ThrowIfCancellationRequested();
-                    if (Payload.IsRunning(directory)) throw new InvalidOperationException("בואו פתוחה. סגור את האפליקציה ונסה שוב.");
+                    if (Payload.IsRunning(directory)) throw new InvalidOperationException("תמורה פתוחה. סגור את האפליקציה ונסה שוב.");
                     installing = true;
                     secondary.IsEnabled = false;
                     status.Text = "3 מתוך 3 · מתקינים בחשבון שלך";
@@ -247,12 +247,12 @@ namespace BouInstaller
                     if (!File.Exists(Path.Combine(directory, "Bou Time.exe"))) throw new InvalidOperationException("לא נמצא קובץ האפליקציה לאחר ההתקנה.");
                     completed = true;
                     heading.Text = "יש לך זמן לדברים הטובים.";
-                    description.Text = "בואו מותקנת ומוכנה. אפשר להתחיל בפרויקט הראשון שלך, או לייבא גיבוי קיים מתוך ההגדרות.";
+                    description.Text = "תמורה מותקנת ומוכנה. אפשר להתחיל בפרויקט הראשון שלך, או לייבא גיבוי קיים מתוך ההגדרות.";
                     status.Text = "ההתקנה הושלמה בהצלחה";
                     detail.Text = "גרסה " + release.version + " · קיצור דרך נוסף לתפריט ההתחלה ולשולחן העבודה";
                     progress.IsIndeterminate = false;
                     progress.Value = 100;
-                    primary.Content = "פתיחת בואו";
+                    primary.Content = "פתיחת תמורה";
                 }
             }
             catch (OperationCanceledException)

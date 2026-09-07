@@ -18,7 +18,7 @@ export default function PwaInstall() {
   return (
     <section className="surface">
       <MonitorDown className="section-icon" />
-      <h2>בואו, גם בלי לשונית</h2>
+      <h2>תמורה, גם בלי לשונית</h2>
       <p>
         בגרסת ההפעלה ניתן להתקין דרך תפריט Chrome או Edge: התקנת אפליקציה. אחרי
         פתיחה ראשונה, הקבצים נשמרים לשימוש גם בלי רשת. הנתונים נשארים באותו
@@ -43,7 +43,7 @@ export default function PwaInstall() {
             }
           }}
         >
-          התקנת בואו
+          התקנת תמורה
         </Button>
       )}
       {message && <p role="status">{message}</p>}

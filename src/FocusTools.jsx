@@ -71,7 +71,7 @@ function FullClockScreen({
     >
       <header className="focus-top">
         <span className="focus-brand">
-          בואו<span>.</span>
+          תמורה<span>.</span>
         </span>
         <span className="focus-state">
           <i className={t?.runningSince != null ? "is-running" : ""} />
@@ -237,7 +237,7 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
       currentWindow.current = child;
       child.document.documentElement.lang = "he";
       child.document.documentElement.dir = "rtl";
-      child.document.title = "בואו · צג צף";
+      child.document.title = "תמורה · צג צף";
       child.document.body.className = "pip-body";
       // Linked styles keep absolute asset URLs and local fonts working under the production CSP.
       document

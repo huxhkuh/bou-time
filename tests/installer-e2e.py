@@ -38,7 +38,7 @@ def fingerprints():
 before = fingerprints()
 process = subprocess.Popen([str(Path(args.installer).resolve())], env=env)
 app = Application(backend="uia").connect(process=process.pid, timeout=20)
-window = app.window(title="בואו · התקנה")
+window = app.window(title="תמורה · התקנה")
 window.wait("visible", timeout=20)
 status = window.child_window(auto_id="Status")
 primary = window.child_window(auto_id="InstallButton")
@@ -46,7 +46,7 @@ secondary = window.child_window(auto_id="CancelButton")
 try:
     assert status.window_text() == "מוכנים כשנוח לך"
     primary.invoke()
-    wait_until(60, 0.1, lambda: "מורידים את בואו" in status.window_text())
+    wait_until(60, 0.1, lambda: "מורידים את תמורה" in status.window_text())
     secondary.invoke()
     wait_until(20, 0.2, lambda: status.window_text() == "ההורדה בוטלה")
     assert primary.is_enabled()
@@ -90,7 +90,7 @@ try:
 
     wait_until(30, 0.2, lambda: launched() is not None)
     application = Application(backend="uia").connect(process=launched(), timeout=20)
-    main = application.window(title_re=".*בואו.*")
+    main = application.window(title_re=".*תמורה.*")
     main.wait("visible", timeout=30)
     main.close()
     assert before == fingerprints(), "Opening with an isolated profile changed user data"

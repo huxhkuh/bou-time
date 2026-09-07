@@ -102,7 +102,7 @@ export default function CompactClock({
     >
       <header className="compact-header">
         <span className="compact-brand">
-          בואו<span>.</span>
+          תמורה<span>.</span>
         </span>
         <div className="compact-tools">
           <button

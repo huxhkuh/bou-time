@@ -10,7 +10,7 @@ const { readFile } = require("node:fs/promises");
 const path = require("node:path");
 const ORIGIN = "bou://app";
 const root = path.join(__dirname, "..", "dist");
-app.setName("Bou Time");
+app.setName("תמורה");
 app.setPath(
   "userData",
   process.env.BOU_DESKTOP_TEST === "1" && process.env.BOU_TEST_PROFILE
@@ -91,7 +91,7 @@ function openFloating() {
     useContentSize: true,
     frame: false,
     alwaysOnTop: true,
-    title: "בואו · צג צף",
+    title: "תמורה · צג צף",
     backgroundColor: "#272923",
   });
   floatingWindow.on("closed", () => {
@@ -136,7 +136,7 @@ else {
     session.defaultSession.setPermissionCheckHandler(() => false);
     session.defaultSession.on("will-download", (_event, item) => {
       item.setSaveDialogOptions({
-        title: "שמירת קובץ מבואו",
+        title: "שמירת קובץ מתמורה",
         defaultPath: path.join(
           app.getPath("downloads"),
           path.basename(item.getFilename()),
@@ -172,7 +172,7 @@ else {
       height: 960,
       minWidth: 760,
       minHeight: 620,
-      title: "בואו · זמן לעבוד טוב",
+      title: "תמורה · מעקב זמן עבודה",
     });
     mainWindow.on("closed", () => {
       mainWindow = null;

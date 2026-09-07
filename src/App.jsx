@@ -69,8 +69,8 @@ export default function App() {
   }, [toast]);
   useEffect(() => {
     document.title = state?.timer
-      ? `${hms(elapsed(state.timer, now))} · בואו`
-      : "בואו · זמן לעבוד טוב";
+      ? `${hms(elapsed(state.timer, now))} · תמורה`
+      : "תמורה · מעקב זמן עבודה";
   }, [state?.timer, now]);
   const mutate = useCallback(async (fn) => {
     const s = await change(fn);
@@ -189,8 +189,8 @@ export default function App() {
       </a>
       <aside className="sidebar">
         <div className="brand">
-          בואו<span>.</span>
-          <small>זמן לעבוד טוב</small>
+          תמורה<span>.</span>
+          <small>מעקב זמן עבודה</small>
         </div>
         <nav aria-label="ניווט ראשי">
           {NAV.map(([key, label, Icon]) => (
@@ -281,7 +281,7 @@ export default function App() {
         {page === "reports" && <Reports {...common} />}
         {page === "settings" && <Settings {...common} />}
         <footer className="main-footer">
-          <span>בואו נעשה זמן לדברים החשובים.</span>
+          <span>הזמן שלך. העבודה שלך. התמורה שלך.</span>
           <span>שעון ישראל · שבוע מתחיל ביום ראשון</span>
         </footer>
       </main>

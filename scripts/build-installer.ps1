@@ -9,3 +9,6 @@ $references = @('System.dll','System.Core.dll','System.Net.Http.dll','System.Web
 & $compiler /nologo /target:winexe /platform:anycpu /optimize+ /codepage:65001 "/out:$(Join-Path $OutputDirectory 'Bou-Install.exe')" "/win32manifest:$projectRoot\installer\app.manifest" "/win32icon:$projectRoot\desktop\icon.ico" "/resource:$projectRoot\installer\Installer.xaml,Installer.xaml" $references "$projectRoot\installer\Installer.cs"
 if ($LASTEXITCODE -ne 0) { throw 'Installer compilation failed.' }
 Write-Output "Built $(Join-Path $OutputDirectory 'Bou-Install.exe')"
+
+# Preserve the original download link for existing users.
+Copy-Item -LiteralPath (Join-Path $OutputDirectory 'Bou-Install.exe') -Destination (Join-Path $OutputDirectory 'Temura-Install.exe')
