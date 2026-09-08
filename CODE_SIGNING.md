@@ -2,7 +2,7 @@
 
 ## Current status
 
-Temura (תמורה) is preparing an application for free code signing through SignPath Foundation. **No approval or signing certificate has been granted. Existing releases are unsigned.** This page is a proposed policy for onboarding, not a claim that SignPath has reviewed or endorsed the project.
+Temura (תמורה) submitted an application for free code signing through SignPath Foundation on September 8, 2026. The application form confirmed receipt with “Form submitted” and “Thank you, we'll be in touch soon.” **The application is awaiting review; no approval or signing certificate has been granted. Existing releases are unsigned.** This page is a proposed policy for onboarding, not a claim that SignPath has reviewed or endorsed the project.
 
 If the application is approved and signed releases are available, the attribution will be: Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org). Foundation certificates identify SignPath Foundation as the publisher.
 
@@ -30,4 +30,4 @@ See [Privacy policy](PRIVACY.md). Users' work records stay on their device; inst
 
 ## בעברית
 
-אנחנו מכינים בקשה למסלול החינמי של SignPath. עדיין אין אישור והגרסאות הקיימות אינן חתומות. בעל המאגר יאשר ידנית כל בקשת חתימה, לאחר בדיקת הקוד ותוצאות הבנייה. הפעלת החתימה מחייבת אימות דו־שלבי והגדרת הרשאות אצל הספק. פרטי העבודה האישיים אינם נשלחים לשירות החתימה.
+הבקשה למסלול החינמי של SignPath הוגשה ב־8 בספטמבר 2026 והאתר אישר את קבלתה. הבקשה ממתינה לבדיקה; עדיין אין אישור והגרסאות הקיימות אינן חתומות. בעל המאגר יאשר ידנית כל בקשת חתימה, לאחר בדיקת הקוד ותוצאות הבנייה. הפעלת החתימה מחייבת אימות דו־שלבי והגדרת הרשאות אצל הספק. פרטי העבודה האישיים אינם נשלחים לשירות החתימה.
