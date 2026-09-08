@@ -1,0 +1,61 @@
+name: Windows verification build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm test
+      - name: Test bootstrapper validation
+        shell: powershell
+        run: ./scripts/test-installer.ps1
+      - name: Build unsigned Windows packages
+        run: npm run build:windows
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Build bootstrapper and release metadata
+        shell: powershell
+        run: |
+          ./scripts/build-installer.ps1
+          ./scripts/prepare-release.ps1
+      - name: Record source provenance
+        shell: pwsh
+        run: |
+          @{
+            repository = $env:GITHUB_REPOSITORY
+            commit = $env:GITHUB_SHA
+            run = "https://github.com/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
+            signed = $false
+          } | ConvertTo-Json | Set-Content ../windows/build-provenance.json
+      - name: Upload unsigned verification artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: temura-unsigned-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+          path: |
+            ../windows/Temura-Install.exe
+            ../windows/Bou-Install.exe
+            ../windows/Bou-Time-*-x64-Setup.exe
+            ../windows/Bou-Time-*-x64-Portable.exe
+            ../windows/*.blockmap
+            ../windows/latest.yml
+            ../windows/windows-release.json
+            ../windows/SHA256SUMS.txt
+            ../windows/build-provenance.json
