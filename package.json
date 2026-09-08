@@ -1,6 +1,7 @@
 {
   "name": "bou-time",
   "version": "1.4.1",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
@@ -49,6 +50,8 @@
     "files": [
       "dist/**/*",
       "desktop/**/*",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.txt",
       "package.json"
     ],
     "asar": true,
