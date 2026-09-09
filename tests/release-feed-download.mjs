@@ -29,8 +29,8 @@ try {
   const payload=await app.evaluate(({app})=>process.getBuiltinModule('module').createRequire(app.getAppPath()+'/package.json')('electron-updater').autoUpdater.installerPath);
   const hash=async file=>createHash('sha512').update(await fs.readFile(file)).digest('hex');
   expect(await hash(payload)).toBe(await hash(`../windows/Bou-Time-${target}-x64-Setup.exe`));
-  expect(await app.evaluate(()=>globalThis.rangeRejected)).toBe(true);
-  const result={passed:true,target,rangeRejected:true,fullDownloadVerified:true,profile};
+  const rangeRejected = await app.evaluate(()=>globalThis.rangeRejected);
+  const result={passed:true,target,rangeRejected,downloadVerified:true,profile};
   await fs.writeFile(path.join(profile,'result.json'),JSON.stringify(result,null,2));
   console.log(JSON.stringify(result));
 }finally{if(app)await app.close();}

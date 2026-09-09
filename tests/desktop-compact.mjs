@@ -141,6 +141,8 @@ try {
   child = app.windows().find((w) => w !== page);
   await expect(child.locator("html")).toHaveAttribute("dir", "ltr");
   await expect(child.locator("html")).toHaveAttribute("data-theme", "forest");
+  // Respect the deliberate 600 ms protection against a stop/start double-click.
+  await expect.poll(async () => Date.now() - (await snapshot(page)).lastStoppedAt).toBeGreaterThanOrEqual(600);
   await child.getByRole("button", { name: "Work on עיצוב האתר", exact: true }).click();
   await expect(child.getByRole("button", { name: "Pause", exact: true })).toBeVisible();
   expect(await child.evaluate(() => document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight)).toBe(true);
