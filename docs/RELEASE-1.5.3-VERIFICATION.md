@@ -25,3 +25,5 @@ The unmodified hardened Windows EXE passed native startup/settings checks; the i
 An isolated copy of 1.5.2, with its ASAR verified identical to the installed version, used the real GitHub feed to find and download 1.5.3 to “ready to install”. Its setup SHA-512 matched the published build. Installation was not invoked. Version 1.5.3 correctly reported itself current, with invalid IPC rejected and the 760px RTL layout intact.
 
 The deletion report test now uses a fixed work date and explicit report bounds so it also works at month boundaries; the final fixed-date scenario passed. This test-only follow-up does not change packaged application bytes.
+
+All eight published assets were downloaded and matched the local SHA-256 and byte counts. Historical manifest and payload redirects passed (the payload ignored Range, so its full bytes were hashed). The live Pages download links return the 1.5.3 setup/portable paths. npm audit reported zero vulnerabilities.
