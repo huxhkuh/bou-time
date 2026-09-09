@@ -18,3 +18,9 @@ Adds a persistent display-mode preference under Backup & settings → Language &
 The user's installed 1.5.1 app was open and its data files locked. A current-user upgrade test stopped before any modification; it was not retried by closing the user's app. This release does not claim a fresh real-install upgrade test. Updater/installer code and application identities are unchanged from the verified 1.5.1 release. The user can apply 1.5.2 through the existing explicit update flow.
 
 Appearance is local to the profile (`bou-ui-mode`) and excluded from work-data backups. Publisher signing remains pending; checksums are not publisher signatures. Production hardening fuses stay enabled. Playwright uses an isolated copy with only its required Node inspector enabled and the identical application ASAR.
+
+## Public release verification
+
+Published v1.5.2 with all eight assets. Downloaded every public asset and compared its complete SHA-256 and byte count with the local build; YAML SHA-512 and the intentionally historical manifest/payload redirects passed.
+
+An isolated instrumented 1.5.1 copy (ASAR verified identical to the user's installed app) checked the real GitHub feed, found 1.5.2, downloaded it to “ready to install” and matched the complete setup SHA-512. Installation was not invoked. The 1.5.2 copy then correctly reported itself current. Its invalid-IPC and 760px RTL checks passed too.
