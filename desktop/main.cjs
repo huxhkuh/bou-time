@@ -9,6 +9,7 @@ const {
 } = require("electron");
 const { readFile } = require("node:fs/promises");
 const path = require("node:path");
+const { guardRangeDownloads } = require("./range-download.cjs");
 const { createUpdates } = require("./updates.cjs");
 const { appURL, updateIdentity, verifyInstaller } = require("./security.cjs");
 const ORIGIN = "bou://app";
@@ -197,7 +198,7 @@ else {
         ? "זוהי גרסה ניידת. כדי לקבל עדכונים פנימיים, התקן את תמורה באמצעות המתקין מ־GitHub."
         : null;
     const updater = unavailable ? null : require("electron-updater").autoUpdater;
-    if (updater) updater.logger = null;
+    if (updater) { updater.logger = null; guardRangeDownloads(updater.httpExecutor); }
     const updates = createUpdates({
       updater, version: app.getVersion(), unavailable,
       validateUpdate: updateIdentity,

@@ -38,8 +38,9 @@ if (process.argv.includes('--public')) {
   assert.equal(oldManifest.status, 200);
   assert.deepEqual(await oldManifest.json(), manifest);
   const oldPayload = await fetch(manifest.url, { headers: { Range:'bytes=0-0' } });
-  assert.equal(oldPayload.status, 206);
-  assert.equal((await oldPayload.arrayBuffer()).byteLength, 1);
+  assert.ok([200,206].includes(oldPayload.status));
+  if(oldPayload.status === 206) assert.equal((await oldPayload.arrayBuffer()).byteLength, 1);
+  else { const hash=createHash('sha256'); for await(const chunk of oldPayload.body) hash.update(chunk); assert.equal(hash.digest('hex'),manifest.sha256); console.log('Historical payload server ignored Range; full bytes verified'); }
   console.log('Historical manifest and payload redirects verified');
 }
 console.log(JSON.stringify({ passed:true, version, checks:['all eight assets', 'SHA256', 'YAML SHA512 and size', 'stable identity filenames', 'intentional historical manifest URL', 'bootstrapper alias parity'] }));

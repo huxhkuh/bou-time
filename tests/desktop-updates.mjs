@@ -45,7 +45,7 @@ const server = http.createServer(async (req, res) => {
     const v = name.includes("9.0.0") ? "9.0.0" : "9.0.1";
     const file = path.join(root, v, name);
     const stat = await fs.stat(file);
-    const match = /^bytes=(\d+)-(\d*)$/.exec(req.headers.range || "");
+    const match = mode === "ignore-range" ? null : /^bytes=(\d+)-(\d*)$/.exec(req.headers.range || "");
     const start = match ? Number(match[1]) : 0, end = match?.[2] ? Number(match[2]) : stat.size - 1;
     if (match) { ranges++; res.statusCode = 206; res.setHeader("Content-Range", `bytes ${start}-${end}/${stat.size}`); }
     res.setHeader("Content-Length", end - start + 1); res.setHeader("Accept-Ranges", "bytes");
@@ -129,6 +129,14 @@ try {
   await check(); await download();
   await expect(section()).toContainText("העדכון לא הושלם", { timeout: 120000 });
   await expect(section().getByRole("button", { name: "התקנה והפעלה מחדש" })).toHaveCount(0);
+  mode = "ignore-range"; payloadBytes = 0;
+  await check(); await download();
+  await expect(section()).toContainText("העדכון מוכן להתקנה", { timeout: 120000 });
+  expect(await hash(downloadedPath)).toBe(await hash(payload));
+  expect(payloadBytes).toBeLessThan(fullSize * 1.2);
+  console.log("Server ignored Range: promptly aborted partial response and verified full fallback");
+  await app.close(); app = null; await launch(); mode = "bad-hash";
+  await check(); await download(); await expect(section()).toContainText("העדכון לא הושלם", { timeout: 120000 });
   // Simulate a user/cleaner clearing the installer cache: a full, verified
   // download must still work. Only move the test application's cache file.
   const cacheInstaller = path.join(descriptor.cache, "installer.exe");
@@ -176,7 +184,7 @@ try {
   expect(await readData()).toEqual(before);
   await check(); await expect(section()).toContainText("אתה משתמש בגרסה העדכנית");
   expect(errors).toEqual([]);
-  await fs.writeFile(path.join(root, "result.json"), JSON.stringify({ passed: true, delta, checks: ["real cache seeded by NSIS", "no update", "network error", "cancel/retry", "differential SHA-512 verified", "normal exit does not install", "ready download reused after restart without payload transfer", "corrupt download rejected", "missing cache falls back to full download", "installer modified after download rejected before execution", "defer restart", "real NSIS update and automatic relaunch", "client/project/task/running timer unchanged"] }, null, 2));
+  await fs.writeFile(path.join(root, "result.json"), JSON.stringify({ passed: true, delta, checks: ["real cache seeded by NSIS", "no update", "network error", "server ignores Range: immediate verified full fallback", "cancel/retry", "differential SHA-512 verified", "normal exit does not install", "ready download reused after restart without payload transfer", "corrupt download rejected", "missing cache falls back to full download", "installer modified after download rejected before execution", "defer restart", "real NSIS update and automatic relaunch", "client/project/task/running timer unchanged"] }, null, 2));
   console.log(JSON.stringify({ passed: true, delta, root }));
 } finally {
   if (app) await app.close();
