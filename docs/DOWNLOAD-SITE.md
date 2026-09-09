@@ -46,7 +46,9 @@ on an ephemeral loopback port and verifies Hebrew/English direction and navigati
 320/390/768/1024/1440-pixel layouts, image loading, keyboard tabs, GIF playback and
 automatic/manual stopping, error recovery, FAQ keyboard interaction, all local
 references and navigation without JavaScript. Screenshots go to ignored
-`work/download-site-qa`. Inspect those images as well as the running page.
+`work/download-site-qa`. Image bytes are compared to the local assets: an HTTP 200
+placeholder from a network filter must not count as a verified recording. Inspect
+the screenshots as well as the running page.
 
 For a deployed check in PowerShell:
 
@@ -61,3 +63,16 @@ assets. After pushing, wait for the Pages deployment, run the public test and
 verify GitHub download responses. The full setup and portable links are versioned;
 the small installer uses the latest-release alias. Keep all compatibility file
 names intact. Do not describe checksums as publisher signatures.
+
+### Publication check, 2026-09-10
+
+The redesign was deployed successfully. Public language navigation, layouts and
+controls passed browser checks. The small installer was downloaded and matched
+the release SHA-256; setup and portable links returned HTTP 200 with expected
+sizes. Both Frank Ruhl Libre font files matched their local bytes.
+
+The current network's NetFree image filter replaces the new screenshots and GIFs
+with review-pending placeholders, even though it returns HTTP 200. Actual assets
+were visually verified locally; their public visual verification on this network
+remains blocked pending that external review. Do not treat the initial browser
+load checks as proof that the public GIF frames were visible.

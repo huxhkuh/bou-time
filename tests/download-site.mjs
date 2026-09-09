@@ -105,6 +105,11 @@ try {
   for (const reference of references) {
     const response = await context.request.get(new URL(reference, base).href);
     assert(response.ok(), `Broken reference: ${reference}`);
+    if (/\.(png|gif|woff2)$/.test(reference)) {
+      const actual = await response.body();
+      const expected = await fs.readFile(path.join(root, reference));
+      assert(actual.equals(expected), `Asset content differs: ${reference}. A network image filter may have replaced it; HTTP 200 alone does not verify the demonstration.`);
+    }
   }
   assert.deepEqual(failures, []);
   console.log(`PASS static navigation, reduced motion, GIF error recovery, all local links. Screenshots: ${output}`);
