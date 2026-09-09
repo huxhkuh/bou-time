@@ -1,6 +1,6 @@
-import { applyPreferences, getPreferences } from "./preferences.js";
+import { applyPreferences, getPreferences, subscribePreferences, setPreference } from "./preferences.js";
 import { tr } from "./i18n.js";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import {
   PictureInPicture2,
@@ -37,7 +37,8 @@ function FullClockScreen({
   const [project, setProject] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const [light, setLight] = useState(false);
+  const prefs = useSyncExternalStore(subscribePreferences, getPreferences);
+  const light = prefs.mode === "light";
   const t = state.timer;
   const activeProject = state.projects.find((p) => p.id === t?.projectId);
   const selected = state.projects.some((p) => p.id === project && !p.archived)
@@ -96,7 +97,10 @@ function FullClockScreen({
           )}
           <button
             aria-label={light ? tr("מעבר לצג כהה") : tr("מעבר לצג בהיר")}
-            onClick={() => setLight(!light)}
+            onClick={() => {
+              try { setPreference("mode", light ? "dark" : "light"); }
+              catch { setMessage(tr("לא הצלחנו לשמור את ההעדפות. בדוק הרשאות שמירה ומקום פנוי.")); }
+            }}
           >
             {light ? <Moon size={17} /> : <Sun size={17} />}
           </button>

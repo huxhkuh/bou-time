@@ -6,7 +6,7 @@ import { readPreferences, LANGUAGES, THEMES } from "../src/preferences.js";
 test("preferences reject invalid values and unavailable storage without touching work data", () => {
   assert.deepEqual(readPreferences({ getItem: () => "invalid" }), {
     language: "he",
-    theme: "clay",
+    theme: "clay", mode: "light",
   });
   assert.deepEqual(
     readPreferences({
@@ -14,13 +14,13 @@ test("preferences reject invalid values and unavailable storage without touching
         throw Error();
       },
     }),
-    { language: "he", theme: "clay" },
+    { language: "he", theme: "clay", mode: "light" },
   );
   assert.deepEqual(
     readPreferences({
-      getItem: (k) => ({ "bou-ui-language": "en", "bou-ui-theme": "ocean" })[k],
+      getItem: (k) => ({ "bou-ui-language": "en", "bou-ui-theme": "ocean", "bou-ui-mode": "dark" })[k],
     }),
-    { language: "en", theme: "ocean" },
+    { language: "en", theme: "ocean", mode: "dark" },
   );
   assert.equal(LANGUAGES.length, 2);
   assert.equal(THEMES.length, 4);

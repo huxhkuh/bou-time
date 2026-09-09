@@ -141,6 +141,12 @@ try {
   child = app.windows().find((w) => w !== page);
   await expect(child.locator("html")).toHaveAttribute("dir", "ltr");
   await expect(child.locator("html")).toHaveAttribute("data-theme", "forest");
+  await page.getByRole("radio", { name: "Dark", exact: true }).check();
+  await expect(child.locator("html")).toHaveAttribute("data-mode", "dark");
+  await child.getByRole("button", { name: "Switch to light display", exact: true }).click();
+  await expect(page.getByRole("radio", { name: "Light", exact: true })).toBeChecked();
+  await child.getByRole("button", { name: "Switch to dark display", exact: true }).click();
+  await expect(page.getByRole("radio", { name: "Dark", exact: true })).toBeChecked();
   // Respect the deliberate 600 ms protection against a stop/start double-click.
   await expect.poll(async () => Date.now() - (await snapshot(page)).lastStoppedAt).toBeGreaterThanOrEqual(600);
   await child.getByRole("button", { name: "Work on עיצוב האתר", exact: true }).click();
@@ -164,7 +170,7 @@ try {
         "340x217 expanded size",
         "no overflow",
         "close and restart persistence",
-        "English tiny layout and live language/theme sync",
+        "English tiny layout and live language/theme/mode sync in both directions",
       ],
     }),
   );

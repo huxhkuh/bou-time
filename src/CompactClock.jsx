@@ -1,5 +1,6 @@
+import { getPreferences, subscribePreferences, setPreference } from "./preferences.js";
 import { tr } from "./i18n.js";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   Minimize2,
   Maximize2,
@@ -26,8 +27,9 @@ export default function CompactClock({
       return true;
     }
   });
-  const [light, setLight] = useState(false),
-    [now, setNow] = useState(Date.now()),
+  const prefs = useSyncExternalStore(subscribePreferences, getPreferences);
+  const light = prefs.mode === "light";
+  const [now, setNow] = useState(Date.now()),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
   const inFlight = useRef(false);
@@ -117,7 +119,10 @@ export default function CompactClock({
           <button
             title={light ? tr("מעבר לצג כהה") : tr("מעבר לצג בהיר")}
             aria-label={light ? tr("מעבר לצג כהה") : tr("מעבר לצג בהיר")}
-            onClick={() => setLight(!light)}
+            onClick={() => {
+              try { setPreference("mode", light ? "dark" : "light"); }
+              catch { setError(tr("לא הצלחנו לשמור את ההעדפות. בדוק הרשאות שמירה ומקום פנוי.")); }
+            }}
           >
             {light ? <Moon /> : <Sun />}
           </button>

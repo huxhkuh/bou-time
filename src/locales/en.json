@@ -362,5 +362,8 @@
   "לא הצלחנו לשמור את ההעדפות. בדוק הרשאות שמירה ומקום פנוי.": "Could not save preferences. Check storage permissions and free space.",
   "עדכונים פנימיים זמינים בגרסה המותקנת של Windows.": "In-app updates are available in the installed Windows version.",
   "זוהי גרסה ניידת. כדי לקבל עדכונים פנימיים, התקן את תמורה באמצעות המתקין מ־GitHub.": "This is a portable build. For in-app updates, install Temura using the GitHub installer.",
-  "העדכון לא הושלם. בדוק את החיבור לאינטרנט ואת המקום הפנוי ונסה שוב. הגרסה הנוכחית זמינה לעבודה.": "The update could not be completed. Check your connection and free space, then try again. You can keep using the current version."
+  "העדכון לא הושלם. בדוק את החיבור לאינטרנט ואת המקום הפנוי ונסה שוב. הגרסה הנוכחית זמינה לעבודה.": "The update could not be completed. Check your connection and free space, then try again. You can keep using the current version.",
+  "תצוגה": "Display mode",
+  "בהיר": "Light",
+  "כהה": "Dark"
 }

@@ -59,9 +59,9 @@ test("focus mode controls the existing timer, supports theme and keyboard, close
   ).toBeVisible();
   const paused = await focus.locator(".focus-digits").textContent();
   await focus
-    .getByRole("button", { name: "מעבר לצג בהיר", exact: true })
+    .getByRole("button", { name: "מעבר לצג כהה", exact: true })
     .click();
-  await expect(focus.locator(".focus-clock")).toHaveClass(/is-light/);
+  await expect(focus.locator(".focus-clock")).not.toHaveClass(/is-light/);
   await expect(focus.locator(".focus-digits")).toHaveText(paused);
   await page.screenshot({ path: "../../work/focus-desktop.png" });
   await page.keyboard.press("Escape");

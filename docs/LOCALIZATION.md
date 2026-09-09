@@ -14,6 +14,8 @@ To add a language:
 
 Palettes are CSS custom properties in `appearance.css`; their allowlist is `THEMES` in `preferences.js`. Include a swatch and translated name in `AppearanceSettings.jsx` when adding one.
 
-Preferences use separate localStorage keys `bou-ui-language` and `bou-ui-theme`, validate values, and synchronize across windows through storage events. They are specific to the device/browser profile and are intentionally separate from work-data backups. Work data and database schema are unchanged. Israel time, Sunday week boundaries and ILS currency are independent of interface language. Browser/Windows file-picker text, installation UI and the installed application's identity follow the existing OS/installer language; the bootstrapper remains Hebrew.
+Preferences use separate localStorage keys `bou-ui-language`, `bou-ui-theme` and `bou-ui-mode`, validate values, and synchronize across windows through storage events. They are specific to the device/browser profile and are intentionally separate from work-data backups. Work data and database schema are unchanged. Israel time, Sunday week boundaries and ILS currency are independent of interface language. Browser/Windows file-picker text, installation UI and the installed application's identity follow the existing OS/installer language; the bootstrapper remains Hebrew.
 
 Run `npm test`, `npm run build`, and `npm run test:e2e`. Browser tests use their own production server on port 5184 and fail if it is occupied, instead of accidentally testing another project.
+
+Version 1.5.2 adds explicit Light/Dark display mode (default: Light). It is independent of the four palettes. `MODES` validates the value and `data-mode` selects CSS tokens. The focus and floating clocks share this preference; their sun/moon button updates the main app too. The choice persists through reload/restart without changing work data.

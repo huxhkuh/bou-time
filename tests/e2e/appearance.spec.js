@@ -1,0 +1,47 @@
+import { test, expect } from '@playwright/test';
+const data = page => page.evaluate(() => new Promise(resolve => { const r=indexedDB.open('bou-personal-time-v1'); r.onsuccess=()=>{const db=r.result;const q=db.transaction('state').objectStore('state').get('main');q.onsuccess=()=>{db.close();resolve(q.result);};}; }));
+test('light/dark persists across reload and tabs, preserves data, all palettes and mobile', async ({page,context})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('/');
+ await page.getByRole('button',{name:'צור פרויקט ראשון',exact:true}).click();
+ await page.getByLabel('שם הלקוח',{exact:true}).fill('לקוח לדוגמה');
+ await page.getByRole('button',{name:'שמירה',exact:true}).click();
+ await page.getByLabel('שם הפרויקט',{exact:true}).fill('Website / אתר חדש');
+ await page.getByRole('button',{name:'שמירה',exact:true}).click();
+ await expect(page.getByRole('dialog')).toHaveCount(0);
+ const before=await data(page);
+ await page.getByRole('button',{name:'גיבוי והגדרות',exact:true}).click();
+ await expect(page.getByRole('radio',{name:'בהיר',exact:true})).toBeChecked();
+ const other=await context.newPage();await other.goto('/');
+ await page.getByRole('radio',{name:'כהה',exact:true}).check();
+ await expect(other.locator('html')).toHaveAttribute('data-mode','dark');
+ await expect(page.locator('html')).toHaveCSS('color-scheme','dark');
+ for(const palette of ['שמנת וחרס','יער','אוקיינוס','שזיף']){
+  await page.getByRole('radio',{name:palette,exact:true}).check();
+  await expect(page.locator('.appearance-settings > p').first()).toHaveCSS('color', 'rgb(177, 184, 174)');
+  expect(await page.locator('.surface').first().evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(36, 41, 37)');
+ }
+ await page.screenshot({path:'../../work/dark-settings.png',fullPage:true});
+ await page.reload(); await expect(page.locator('html')).toHaveAttribute('data-mode','dark');
+ expect(await data(page)).toEqual(before);
+ await page.getByRole('button',{name:'פרויקטים',exact:true}).click();
+ await page.locator('summary').click();
+ await page.getByPlaceholder('משימה חדשה…').fill('בדיקת תצוגה');
+ await page.getByRole('button',{name:'הוספת משימה לפרויקט Website / אתר חדש',exact:true}).click();
+ await page.screenshot({path:'../../work/dark-projects.png',fullPage:true});
+ await page.getByRole('button',{name:'היום',exact:true}).click();
+ await page.screenshot({path:'../../work/dark-dashboard.png',fullPage:true});
+ await page.getByRole('button',{name:'הוספה ידנית',exact:true}).first().click();
+ await page.screenshot({path:'../../work/dark-form.png'});
+ await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'גיבוי והגדרות',exact:true}).click();
+ await page.getByLabel('שפת הממשק',{exact:true}).selectOption('en');
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await expect(page.getByRole('radio',{name:'Dark',exact:true})).toBeChecked();
+ await page.screenshot({path:'../../work/dark-mobile.png',fullPage:true});
+ await page.getByRole('radio',{name:'Light',exact:true}).check();
+ await expect(other.locator('html')).toHaveAttribute('data-mode','light');
+ await page.reload();await expect(page.locator('html')).toHaveAttribute('data-mode','light');
+ expect(errors).toEqual([]);
+});

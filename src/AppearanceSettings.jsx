@@ -1,5 +1,5 @@
 import React, { useSyncExternalStore } from "react";
-import { Palette } from "lucide-react";
+import { Palette, Sun, Moon } from "lucide-react";
 import { Field } from "./ui.jsx";
 import {
   getPreferences,
@@ -40,6 +40,16 @@ export default function AppearanceSettings({ notify }) {
           <option value="en">English</option>
         </select>
       </Field>
+      <fieldset className="theme-picker mode-picker">
+        <legend>{tr("תצוגה")}</legend>
+        {[['light', tr("בהיר"), Sun], ['dark', tr("כהה"), Moon]].map(([mode, label, Icon]) => (
+          <label key={mode}>
+            <input type="radio" name="mode" value={mode} checked={prefs.mode === mode} onChange={() => change("mode", mode)} />
+            <Icon size={18} aria-hidden="true" />
+            <span>{label}</span>
+          </label>
+        ))}
+      </fieldset>
       <fieldset className="theme-picker">
         <legend>{tr("ערכת צבעים")}</legend>
         {THEMES.map((theme) => (

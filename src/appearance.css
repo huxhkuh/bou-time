@@ -139,3 +139,67 @@
     grid-template-columns: 1fr;
   }
 }
+/* Appearance mode is independent of the project's palette and work data. */
+:root { color-scheme: light; }
+:root[data-mode="dark"] {
+  color-scheme: dark;
+  --cream: #191d1b;
+  --surface: #242925;
+  --ink: #f1f0e9;
+  --muted: #b1b8ae;
+  --line: #424940;
+  --accent: #efad87;
+  --accent-hover: #f6c4a7;
+  --accent-bright: #efad87;
+  --accent-soft: #41342b;
+  color: var(--ink);
+  background: var(--cream);
+}
+:root[data-mode="dark"][data-theme="forest"] { --accent: #a2d4ad; --accent-hover: #c0e5c5; --accent-bright: #a2d4ad; --accent-soft: #2c4032; }
+:root[data-mode="dark"][data-theme="ocean"] { --accent: #9bcced; --accent-hover: #bedff5; --accent-bright: #9bcced; --accent-soft: #293c48; }
+:root[data-mode="dark"][data-theme="plum"] { --accent: #dab0d1; --accent-hover: #ebcce5; --accent-bright: #dab0d1; --accent-soft: #40313e; }
+:root[data-mode="dark"] body { color: var(--ink); background: var(--cream); }
+:root[data-mode="dark"] :is(.surface, .client-card, .project-card, dialog, .button, .search, .field input, .field select, .field textarea, .checklist-add input, .checklist-edit input) {
+  color: var(--ink); background-color: var(--surface); border-color: var(--line);
+}
+:root[data-mode="dark"] :is(.sidebar nav button, .sidebar-footer, .sidebar-footer small, .brand small, .eyebrow, .metrics .metric-message, .icon-button, .subtext, .project-description, .project-checklist small, .checklist-filter, .checklist-items .is-complete .checklist-row label span, .update-state span) { color: var(--muted); }
+:root[data-mode="dark"] :is(.button:hover, .icon-button:hover, .sidebar nav button:hover, tbody tr:hover, .tabs, th, .empty > svg, .project-checklist, .update-state, .import-preview, .note-box, kbd) {
+  background-color: var(--cream); border-color: var(--line); color: var(--ink);
+}
+:root[data-mode="dark"] :is(.tabs button.active, .sidebar nav button.active, .checklist-add .button, .checklist-confirm button, .project-card > .button, .start-project, .start-project:hover, .version-pill) {
+  background: var(--accent-soft); color: var(--accent); border-color: var(--line);
+}
+:root[data-mode="dark"] :is(.text-button, .section-icon, .checklist-summary-count) { color: var(--accent); }
+:root[data-mode="dark"] :is(.recent-row, .allocation-row, td, .project-numbers, .checklist-items > li, .form-footer, .summary-row, .main-footer, .project-card:hover) { border-color: var(--line); }
+:root[data-mode="dark"] :is(.button.primary, .timer-start, .focus-primary) { background: var(--accent); border-color: var(--accent); color: #192019; }
+:root[data-mode="dark"] :is(.button.primary:hover:not(:disabled), .focus-primary:hover) { background: var(--accent-hover); color: #192019; }
+:root[data-mode="dark"] :is(.button.danger, .icon-button.danger) { color: #ffb5a6; }
+:root[data-mode="dark"] :is(.error, .update-error) { background: #462a26; color: #ffcec2; }
+:root[data-mode="dark"] .error * { color: inherit; }
+:root[data-mode="dark"] .toast { background: #353d32; color: var(--ink); border: 1px solid var(--line); }
+:root[data-mode="dark"] .toast.error { background: #462a26; }
+:root[data-mode="dark"] .project-symbol { background: color-mix(in srgb, var(--project-color) 20%, var(--surface)); }
+:root[data-mode="dark"] .goal progress::-webkit-progress-bar { background: var(--line); }
+:root[data-mode="dark"] input::placeholder, :root[data-mode="dark"] textarea::placeholder { color: #a2aa9e; opacity: 1; }
+:root[data-mode="dark"] dialog::backdrop { background: #0009; }
+:root[data-mode="dark"] .timer { background: #292e29; color: #f1f0e9; border: 1px solid var(--line); }
+:root[data-mode="dark"] .timer .button:not(.primary) { background: transparent; color: #f1f0e9; }
+:root[data-mode="dark"] .skip-link { background: var(--accent); color: #192019; }
+/* Both compact and focus displays follow the same preference, including PiP. */
+:root .compact-clock, :root .focus-clock {
+  --fg: var(--ink); --bg: var(--surface); --soft: var(--muted); --edge: var(--line);
+}
+:root .compact-clock.is-light, :root .focus-clock.is-light {
+  --fg: var(--ink); --bg: var(--surface); --soft: var(--muted); --edge: var(--line);
+}
+:root .focus-dialog, :root .desktop-floating, :root .pip-body { background: var(--surface); }
+.mode-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mode-picker label { justify-content: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .mode-picker label { transition: background-color 120ms, border-color 120ms; }
+}
+
+:root[data-mode="dark"] :is(.settings-grid p, .checklist-count, .checklist-empty, .tabs button, .main-footer) { color: var(--muted); }
+:root[data-mode="dark"] :is(.focus-tools, .avatar, .entries-table .row-actions button) { background: var(--cream); color: var(--ink); }
+:root[data-mode="dark"] .tabs button.selected { background: var(--accent-soft); color: var(--accent); }
+:root[data-mode="dark"] .goal.over { color: #ffb5a6; }

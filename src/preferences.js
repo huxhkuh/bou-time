@@ -1,8 +1,9 @@
 export const LANGUAGES = ["he", "en"];
 export const THEMES = ["clay", "forest", "ocean", "plum"];
-const keys = { language: "bou-ui-language", theme: "bou-ui-theme" };
-const allowed = { language: LANGUAGES, theme: THEMES };
-const defaults = { language: "he", theme: "clay" };
+export const MODES = ["light", "dark"];
+const keys = { language: "bou-ui-language", theme: "bou-ui-theme", mode: "bou-ui-mode" };
+const allowed = { language: LANGUAGES, theme: THEMES, mode: MODES };
+const defaults = { language: "he", theme: "clay", mode: "light" };
 export function readPreferences(storage) {
   const result = { ...defaults };
   for (const field of Object.keys(keys)) {
@@ -32,7 +33,7 @@ export const subscribePreferences = (listener) => {
 };
 function refresh() {
   const next = readPreferences(storage());
-  if (next.language === current.language && next.theme === current.theme)
+  if (next.language === current.language && next.theme === current.theme && next.mode === current.mode)
     return;
   current = next;
   for (const listener of listeners) listener();
@@ -52,4 +53,5 @@ export function applyPreferences(doc = globalThis.document) {
   doc.documentElement.lang = current.language;
   doc.documentElement.dir = current.language === "he" ? "rtl" : "ltr";
   doc.documentElement.dataset.theme = current.theme;
+  doc.documentElement.dataset.mode = current.mode;
 }
