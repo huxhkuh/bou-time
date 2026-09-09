@@ -1,9 +1,10 @@
 import {test,expect} from '@playwright/test';
+const workTime = Date.parse('2026-09-09T09:00:00Z');
 const seed=()=>({version:1,revision:0,timer:null,
  clients:[{id:'c',name:'לקוח למחיקה'},{id:'keep',name:'לקוח נשאר'}],
  projects:['אתר','ארכיון','נשאר'].map((name,i)=>({id:'p'+i,name,clientId:i===2?'keep':'c',color:'#b94f2a',description:'',archived:i===1,priceType:'hourly',price:200,goal:null})),
  tasks:[0,1,2].map(i=>({id:'t'+i,projectId:'p'+i,title:'משימה '+i,completed:false})),
- entries:[0,1,2].map(i=>({id:'e'+i,projectId:'p'+i,description:'עבודה '+i,createdAt:Date.now()-7200000,pricing:{type:'hourly',amount:200},segments:[{start:Date.now()-7200000,end:Date.now()-3600000}]}))});
+ entries:[0,1,2].map(i=>({id:'e'+i,projectId:'p'+i,description:'עבודה '+i,createdAt:workTime,pricing:{type:'hourly',amount:200},segments:[{start:workTime,end:workTime+3600000}]}))});
 const read=page=>page.evaluate(()=>new Promise(resolve=>{const q=indexedDB.open('bou-personal-time-v1');q.onsuccess=()=>{const db=q.result,r=db.transaction('state').objectStore('state').get('main');r.onsuccess=()=>{db.close();resolve(r.result)};};}));
 async function setup(page){await page.goto('/');await page.getByRole('button',{name:'גיבוי והגדרות',exact:true}).click();await page.locator('input[type=file]').setInputFiles({name:'test.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(seed()))});await page.getByRole('button',{name:'ייבוא ומיזוג',exact:true}).click();await expect(page.locator('.import-preview')).toHaveCount(0);}
 const button=(page,name)=>page.getByRole('button',{name,exact:true});
@@ -20,7 +21,7 @@ test('delete project then client: explicit consent, cascade, backup, reports, re
  await expect(dialog).toContainText('Projects: 1');await expect(dialog).toContainText('Time entries: 1');await expect(dialog).toContainText('Tasks: 1');await expect(page.locator('html')).toHaveAttribute('dir','ltr');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.getByLabel('Type the name to confirm deletion').fill('לקוח למחיקה');await page.screenshot({path:'../../work/delete-client-dark-mobile.png'});await button(dialog,'Delete permanently').click();await expect(dialog).toHaveCount(0);
  await page.reload();s=await read(page);expect(s.clients.map(c=>c.id)).toEqual(['keep']);expect(s.projects.map(p=>p.id)).toEqual(['p2']);expect(s.tasks.map(t=>t.id)).toEqual(['t2']);expect(s.entries.map(e=>e.id)).toEqual(['e2']);
- await button(page,'Reports').click();await expect(page.locator('main')).not.toContainText('עבודה 0');await expect(page.locator('main')).not.toContainText('עבודה 1');await expect(page.locator('main')).toContainText('עבודה 2');
+ await button(page,'Reports').click();await page.getByLabel('From date', {exact:true}).fill('2026-09-09');await page.getByLabel('To date', {exact:true}).fill('2026-09-09');await expect(page.locator('main')).not.toContainText('עבודה 0');await expect(page.locator('main')).not.toContainText('עבודה 1');await expect(page.locator('main')).toContainText('עבודה 2');
  await button(page,'Backup & settings').click();const pending=page.waitForEvent('download');await button(page,'Export full backup').click();const dl=await pending;expect(dl.suggestedFilename()).toMatch(/backup.*json/);expect(errors).toEqual([]);
 });
 test('cross-window stale delete and stale edits cannot remove or resurrect work; running/paused timer blocks',async({page,context})=>{
