@@ -1,6 +1,6 @@
 # Publishing a Windows release
 
-Requires Windows 10/11 x64, Node.js 22.12+ (or a supported newer version), npm, Git, and GitHub CLI authenticated with permission to publish releases to `huxhkuh/bou-time`. The bootstrapper uses the .NET Framework compiler bundled with Windows. No signing certificate is configured.
+Requires Windows 10/11 x64, Node.js 22.12+ (or a supported newer version), npm, Git, and GitHub CLI authenticated with permission to publish releases to `huxhkuh/tmora`. The bootstrapper uses the .NET Framework compiler bundled with Windows. No signing certificate is configured.
 
 1. Update `version` in `package.json` and run `npm install --package-lock-only`.
 2. Run `npm ci`, `npm test`, `npm run build`, `npm run test:desktop:compact`, and `powershell -ExecutionPolicy Bypass -File scripts/test-installer.ps1`.
@@ -25,6 +25,14 @@ The graphical bootstrapper targets .NET Framework 4.x APIs available on supporte
 ## Brand identity and upgrade compatibility
 
 Version 1.2.0 changes the public name to תמורה (Temura). Keep appId, executableName, the bou://app origin, IndexedDB names, AppData path and existing versioned payload filename pattern stable. Existing bootstrapper copies validate that exact payload URL and launch Bou Time.exe. Both bootstrapper download names contain the same newly branded binary; the original name stays available as a compatibility link.
+
+### Repository rename to tmora
+
+The canonical repository is now `huxhkuh/tmora`, and the Pages address is `https://huxhkuh.github.io/tmora/`. New Electron builds use `build.publish.repo = tmora`. Rebuilding and publishing a **new** Windows release is required to update the embedded provider in installed apps; editing source alone does not change already-distributed EXEs.
+
+The new bootstrapper fetches its manifest from `tmora`, validates the exact canonical or historical asset path and normalizes the payload URL to `tmora` before downloading. `scripts/prepare-release.ps1` intentionally keeps the historical `huxhkuh/bou-time` URL in the `windows-release.json` wire format: previously released bootstrapper copies require that exact string and would reject a manifest containing only the new path. GitHub's repository redirect bridges those existing binaries. Keep the old name reserved and verify its redirect on every release; do not create a new repository named `bou-time`.
+
+Keep the package name `bou-time`, appId, NSIS identity, executable and asset filenames, updater cache, storage origin, and AppData path unchanged. None of these is the repository address, and changing them can disconnect an upgrade from existing data or installations. Do not replace the existing 1.4.1 release assets. Run the installer validation and Windows update checks above before shipping the migration release.
 
 ### בדיקת צ׳קליסט ב־Windows
 

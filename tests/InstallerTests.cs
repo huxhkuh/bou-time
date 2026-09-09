@@ -17,12 +17,19 @@ public static class InstallerTests
     public static void Main()
     {
         var serializer = new JavaScriptSerializer();
-        var r = new Release { schema = 1, version = "1.1.0", url = "https://github.com/huxhkuh/bou-time/releases/download/v1.1.0/Bou-Time-1.1.0-x64-Setup.exe", sha256 = new string('a', 64), size = 1048576 };
+        var r = new Release { schema = 1, version = "1.1.0", url = "https://github.com/huxhkuh/tmora/releases/download/v1.1.0/Bou-Time-1.1.0-x64-Setup.exe", sha256 = new string('a', 64), size = 1048576 };
         string json = serializer.Serialize(r);
         Check(Payload.Parse(json).version == "1.1.0", "valid manifest");
+        Check(Payload.Parse(json).url == r.url, "canonical repo URL retained");
+        string legacyJson = json.Replace("huxhkuh/tmora", "huxhkuh/bou-time");
+        Check(Payload.Parse(legacyJson).url == r.url, "legacy manifest normalized to canonical repo");
         Reject(() => Payload.Parse(json.Replace("https://github.com/", "https://evil.example/")), "foreign host");
         Reject(() => Payload.Parse(json.Replace("https:", "http:")), "unencrypted URL");
-        Reject(() => Payload.Parse(json.Replace("huxhkuh/bou-time", "attacker/bou-time")), "foreign repo");
+        Reject(() => Payload.Parse(json.Replace("huxhkuh/tmora", "attacker/tmora")), "foreign repo");
+        Reject(() => Payload.Parse(json.Replace("huxhkuh/tmora", "huxhkuh/tmora-fake")), "similar repo name");
+        Reject(() => Payload.Parse(legacyJson.Replace("huxhkuh/bou-time", "attacker/bou-time")), "foreign legacy repo");
+        Reject(() => Payload.Parse(legacyJson.Replace("Setup.exe", "Setup.exe?redirect=evil")), "legacy query injection");
+        Reject(() => Payload.Parse(legacyJson.Replace("v1.1.0/", "v1.0.0/")), "legacy version mismatch");
         Reject(() => Payload.Parse(json.Replace("Setup.exe", "Setup.exe?redirect=evil")), "query injection");
         Reject(() => Payload.Parse(json.Replace("v1.1.0/", "v1.0.0/")), "version mismatch");
         Reject(() => Payload.Parse(json.Replace("1048576", "-1")), "negative size");

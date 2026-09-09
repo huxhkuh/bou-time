@@ -1,6 +1,6 @@
 # Privacy policy / מדיניות פרטיות
 
-Temura (תמורה), maintained at https://github.com/huxhkuh/bou-time, is a personal time tracker. This policy describes the application and Windows installer, not GitHub's website or SignPath's application form.
+Temura (תמורה), maintained at https://github.com/huxhkuh/tmora, is a personal time tracker. This policy describes the application and Windows installer, not GitHub's website or SignPath's application form.
 
 ## Personal work data
 

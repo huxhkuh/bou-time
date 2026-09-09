@@ -6,9 +6,11 @@
 
 קוד הפרויקט זמין ברישיון [MIT](LICENSE). רכיבי צד שלישי נשארים תחת רישיונותיהם המקוריים; ראו [הודעות רישוי](THIRD_PARTY_NOTICES.txt).
 
+[עמוד ההורדה של תמורה](https://huxhkuh.github.io/tmora/)
+
 ## התקנה ב־Windows
 
-### [⬇ הורדת המתקין הקטן של תמורה](https://github.com/huxhkuh/bou-time/releases/latest/download/Temura-Install.exe)
+### [⬇ הורדת המתקין הקטן של תמורה](https://github.com/huxhkuh/tmora/releases/latest/download/Temura-Install.exe)
 
 1. מורידים ופותחים את **Temura-Install.exe** — קובץ קטן של כ־38 KB.
 2. לוחצים **התקנת תמורה**. המתקין מוריד את הגרסה העדכנית מ־GitHub, בודק את הקובץ ומתקין בחשבון Windows הנוכחי, ללא בקשת הרשאות מנהל.
@@ -16,7 +18,7 @@
 
 נדרש Windows 10/11 עם מעבד x64 וחיבור לאינטרנט להתקנה. לאחר ההתקנה אפשר לעבוד ללא חיבור. אין צורך ב־Node.js, בחשבון משתמש באפליקציה או בשירות בתשלום.
 
-**[כל הגרסאות וההורדות](https://github.com/huxhkuh/bou-time/releases/latest)** — שם זמינים גם המתקין המלא להתקנה ללא חיבור (`Setup.exe`), גרסה ללא התקנה (`Portable.exe`) וקובץ בדיקות תקינות (`SHA256SUMS.txt`).
+**[כל הגרסאות וההורדות](https://github.com/huxhkuh/tmora/releases/latest)** — שם זמינים גם המתקין המלא להתקנה ללא חיבור (`Setup.exe`), גרסה ללא התקנה (`Portable.exe`) וקובץ בדיקות תקינות (`SHA256SUMS.txt`).
 
 הקבצים עדיין אינם חתומים בתעודת מפרסם, ולכן Windows עשוי להציג אזהרת מפרסם לא מזוהה. אין צורך לשנות את הגדרות האבטחה.
 
@@ -65,8 +67,8 @@
 </div>
 
 ```powershell
-git clone https://github.com/huxhkuh/bou-time.git
-cd bou-time
+git clone https://github.com/huxhkuh/tmora.git
+cd tmora
 npm ci
 npm run dev
 # http://127.0.0.1:5173
@@ -86,4 +88,4 @@ powershell -ExecutionPolicy Bypass -File scripts/test-installer.ps1
 
 </div>
 
-שם האפליקציה עודכן מבואו לתמורה בגרסה 1.2.0. כתובת המאגר, מזהי האחסון ושמות קובצי התוכנה הפנימיים נשמרו לצורך תאימות להתקנות ולגיבויים קיימים.
+שם האפליקציה עודכן מבואו לתמורה בגרסה 1.2.0. המאגר נקרא כעת `huxhkuh/tmora`. מזהי האחסון ושמות קובצי התוכנה הפנימיים נשמרו לצורך תאימות להתקנות ולגיבויים קיימים.

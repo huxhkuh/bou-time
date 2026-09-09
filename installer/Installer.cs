@@ -27,7 +27,8 @@ namespace BouInstaller
 
     public static class Payload
     {
-        public const string ManifestUrl = "https://github.com/huxhkuh/bou-time/releases/latest/download/windows-release.json";
+        public const string RepositoryUrl = "https://github.com/huxhkuh/tmora";
+        public const string ManifestUrl = RepositoryUrl + "/releases/latest/download/windows-release.json";
         public static Release Parse(string json)
         {
             var serializer = new JavaScriptSerializer { MaxJsonLength = 16384 };
@@ -37,10 +38,15 @@ namespace BouInstaller
                 !Regex.IsMatch(release.sha256 ?? "", @"^[a-fA-F0-9]{64}$") ||
                 release.size < 1048576 || release.size > 1073741824)
                 throw new InvalidDataException("פרטי הגרסה שהתקבלו אינם תקינים.");
-            string expected = "https://github.com/huxhkuh/bou-time/releases/download/v" + release.version +
+            string assetPath = "/releases/download/v" + release.version +
                 "/Bou-Time-" + release.version + "-x64-Setup.exe";
-            if (release.url != expected)
+            string expected = RepositoryUrl + assetPath;
+            // Old bootstrapper copies require the old URL in the shared manifest.
+            // Accept that exact compatibility path, then download from the renamed repo.
+            string legacy = "https://github.com/huxhkuh/bou-time" + assetPath;
+            if (release.url != expected && release.url != legacy)
                 throw new InvalidDataException("כתובת ההורדה אינה תואמת למאגר הרשמי.");
+            release.url = expected;
             return release;
         }
 

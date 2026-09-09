@@ -12,6 +12,9 @@ $setup = Get-Item (Join-Path $OutputDirectory $setupName)
 $manifest = [ordered]@{
     schema = 1
     version = $version
+    # Compatibility wire URL: released bootstrappers validate this exact old path.
+    # GitHub redirects it to huxhkuh/tmora; new bootstrappers normalize it before download.
+    # Keep this alias until old installers are retired; do not reuse the old repo name.
     url = "https://github.com/huxhkuh/bou-time/releases/download/v$version/$setupName"
     sha256 = (Get-FileHash $setup.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
     size = $setup.Length
