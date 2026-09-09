@@ -93,7 +93,8 @@ try {
     expect(await readState()).toEqual(d.before);
     if (d.publicUpdate) {
       expect(await fs.readFile(path.join(path.dirname(installed), 'resources', 'app-update.yml'), 'utf8')).toContain('repo: tmora');
-      expect(await fs.readFile(path.join(path.dirname(installed), 'resources', 'app.asar'))).toEqual(await fs.readFile('../windows/win-unpacked/resources/app.asar'));
+      const asarHash = async file => createHash('sha256').update(await fs.readFile(file)).digest('hex');
+      expect(await asarHash(path.join(path.dirname(installed), 'resources', 'app.asar'))).toBe(await asarHash('../windows/win-unpacked/resources/app.asar'));
     }
     d.verified = true;
     await fs.writeFile(descriptorPath, JSON.stringify(d, null, 2));

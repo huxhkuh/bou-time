@@ -89,8 +89,8 @@ try:
     process.wait(timeout=20)
 
     def launched():
-        for candidate in psutil.process_iter(["pid", "exe"]):
-            if candidate.pid not in previous_ids and candidate.info["exe"] and Path(candidate.info["exe"]) == executable:
+        for candidate in psutil.process_iter(["pid", "exe", "cmdline"]):
+            if candidate.pid not in previous_ids and candidate.info["exe"] and Path(candidate.info["exe"]) == executable and not any(arg.startswith("--type=") for arg in (candidate.info["cmdline"] or [])):
                 return candidate.pid
         return None
 
