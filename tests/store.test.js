@@ -70,3 +70,20 @@ test("concurrent checklist updates preserve each task and unrelated project edit
   assert.equal(s.tasks.find((t) => t.id === "task-0").title, "הושלם ונערך");
   assert.equal(s.projects.find((p) => p.id === "checklist-project").name, "שם חדש");
 });
+
+test("delete/start and delete/task races remain atomic without orphan records", async () => {
+  const { deletionPreview, deleteEntity } = await import('../src/deletion.js');
+  for (const first of ['delete','timer','task']) {
+    await change(s => Object.assign(s, { ...fresh(), clients:[{id:'c',name:'Client'}], projects:[{id:'p',name:'Project',clientId:'c',archived:false,priceType:'none',price:null}] }));
+    const confirmation=deletionPreview(await read(),'project','p');
+    const remove=()=>change(s=>deleteEntity(s,confirmation,'Project'));
+    const start=()=>change(s=>timerAction(s,{type:'start',projectId:'p',expected:null,id:'t'},1000000));
+    const add=()=>change(s=>taskAction(s,{type:'add',projectId:'p',id:'task',title:'Work'}));
+    const results=await Promise.allSettled(first==='delete'?[remove(),start(),add()]:first==='timer'?[start(),remove()]:[add(),remove()]);
+    const after=await read();
+    if(first==='delete') { assert.equal(after.projects.length,0);assert.equal(after.timer,null);assert.equal(after.tasks.length,0); }
+    else { assert.equal(results[1].status,'rejected');assert.equal(after.projects.length,1); }
+    if(after.timer) assert.ok(after.projects.some(p=>p.id===after.timer.projectId));
+    for(const task of after.tasks) assert.ok(after.projects.some(p=>p.id===task.projectId));
+  }
+});

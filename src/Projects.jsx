@@ -1,6 +1,6 @@
 import { tr } from "./i18n.js";
 import React, { useState } from "react";
-import { Plus, Pencil, Play, Folder, ArrowUpLeft } from "lucide-react";
+import { Plus, Pencil, Play, Folder, ArrowUpLeft, Trash2 } from "lucide-react";
 import { Button, Dot, Empty } from "./ui.jsx";
 import { duration, hours, money, HOUR, timerSegments } from "./domain.js";
 import ProjectChecklist from "./ProjectChecklist.jsx";
@@ -11,6 +11,7 @@ export default function Projects({
   newProject,
   start,
   mutate,
+  removeProject,
 }) {
   const [archive, setArchive] = useState(false),
     [query, setQuery] = useState("");
@@ -73,6 +74,7 @@ export default function Projects({
                   <span className="project-symbol" style={{ color: p.color }}>
                     <Folder size={23} />
                   </span>
+                  <div className="entity-actions">
                   <button
                     className="icon-button"
                     aria-label={tr("עריכת פרויקט {0}", [p.name])}
@@ -80,6 +82,10 @@ export default function Projects({
                   >
                     <Pencil size={17} />
                   </button>
+                  <button className="icon-button danger" aria-label={tr("מחיקת פרויקט {0}", [p.name])} title={tr("מחיקת פרויקט")} onClick={() => removeProject(p.id)}>
+                    <Trash2 size={17} />
+                  </button>
+                  </div>
                 </div>
                 <p className="muted">
                   {state.clients.find((c) => c.id === p.clientId)?.name}
@@ -188,7 +194,7 @@ export default function Projects({
     </>
   );
 }
-export function Clients({ state, edit, create }) {
+export function Clients({ state, edit, create, removeClient }) {
   return (
     <>
       <div className="toolbar">
@@ -212,9 +218,14 @@ export function Clients({ state, edit, create }) {
                     {tr("פרויקטים")}
                   </small>
                 </div>
+                <div className="entity-actions">
                 <Button icon={Pencil} onClick={() => edit(c)}>
                   {tr("עריכה")}
                 </Button>
+                <button className="icon-button danger" aria-label={tr("מחיקת לקוח {0}", [c.name])} title={tr("מחיקת לקוח")} onClick={() => removeClient(c.id)}>
+                  <Trash2 size={18} />
+                </button>
+                </div>
               </div>
             ))}
           </div>

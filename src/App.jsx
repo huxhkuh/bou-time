@@ -26,6 +26,8 @@ import { timerAction, dayKey, hms, elapsed } from "./domain.js";
 import { Button, Modal } from "./ui.jsx";
 import { ClientForm, ProjectForm, EntryForm } from "./forms.jsx";
 import Dashboard from "./Dashboard.jsx";
+import DeleteEntity from "./DeleteEntity.jsx";
+import { deletionPreview } from "./deletion.js";
 import Projects, { Clients } from "./Projects.jsx";
 import Reports from "./Reports.jsx";
 import Settings from "./Settings.jsx";
@@ -157,6 +159,10 @@ export default function App() {
     }
   };
   const editEntry = (item) => setModal({ type: "entry", item });
+  const removeEntity = (kind, id) => {
+    const confirmation = deletionPreview(state, kind, id);
+    if (confirmation) setModal({ type: "deleteEntity", confirmation });
+  };
   const remove = (id) => setModal({ type: "delete", id });
   if (loadError)
     return (
@@ -299,6 +305,7 @@ export default function App() {
           <Projects
             {...common}
             edit={(item) => setModal({ type: "project", item })}
+            removeProject={(id) => removeEntity("project", id)}
           />
         )}
         {page === "clients" && (
@@ -306,6 +313,7 @@ export default function App() {
             state={state}
             edit={(item) => setModal({ type: "client", item })}
             create={() => setModal({ type: "client" })}
+            removeClient={(id) => removeEntity("client", id)}
           />
         )}
         {page === "reports" && <Reports {...common} />}
@@ -330,7 +338,9 @@ export default function App() {
                   ? modal.item
                     ? tr("עריכת רישום")
                     : tr("הוספת עבודה ידנית")
-                  : tr("למחוק את הרישום?")
+                  : modal.type === "deleteEntity"
+                    ? modal.confirmation.kind === "client" ? tr("מחיקת לקוח") : tr("מחיקת פרויקט")
+                    : tr("למחוק את הרישום?")
           }
           close={() => setModal(null)}
         >
@@ -358,6 +368,9 @@ export default function App() {
               {...{ state, mutate }}
               close={() => setModal(null)}
             />
+          )}
+          {modal.type === "deleteEntity" && (
+            <DeleteEntity confirmation={modal.confirmation} {...{ state, mutate, notify }} close={() => setModal(null)} />
           )}
           {modal.type === "delete" && (
             <>

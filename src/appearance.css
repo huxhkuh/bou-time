@@ -203,3 +203,16 @@
 :root[data-mode="dark"] :is(.focus-tools, .avatar, .entries-table .row-actions button) { background: var(--cream); color: var(--ink); }
 :root[data-mode="dark"] .tabs button.selected { background: var(--accent-soft); color: var(--accent); }
 :root[data-mode="dark"] .goal.over { color: #ffb5a6; }
+
+.entity-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.entity-actions .icon-button { min-width: 36px; min-height: 36px; }
+.delete-entity p { line-height: 1.8; }
+.delete-name { font-size: 20px; font-weight: 600; overflow-wrap: anywhere; }
+.delete-counts { padding-inline-start: 24px; line-height: 2; }
+.delete-entity .button.danger { border-color: currentColor; }
+:root:not([data-mode="dark"]) :is(.entity-actions .danger, .delete-entity .button.danger) { color: #962f24; }
+@media (max-width: 600px) {
+  .client-list .recent-row { flex-wrap: wrap; }
+  .client-list .grow { min-width: 120px; overflow-wrap: anywhere; }
+  .client-list .entity-actions { margin-inline-start: auto; }
+}
