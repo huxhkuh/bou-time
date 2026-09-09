@@ -61,7 +61,7 @@
   letter-spacing: -1.5px;
 }
 .focus-brand > span {
-  color: #d5784e;
+  color: var(--accent-bright);
 }
 .focus-state {
   color: var(--soft);
@@ -81,7 +81,7 @@
 }
 .focus-top-actions {
   display: flex;
-  margin-right: auto;
+  margin-inline-start: auto;
   gap: 3px;
 }
 .focus-top-actions button {
@@ -164,8 +164,8 @@
 }
 .focus-primary {
   color: #fff;
-  background: #b94f2a;
-  border: 1px solid #b94f2a;
+  background: var(--accent);
+  border: 1px solid var(--accent);
 }
 .focus-primary:hover {
   background: #a14222;
@@ -364,7 +364,7 @@
   letter-spacing: -1.5px;
 }
 .compact-brand > span {
-  color: #d5784e;
+  color: var(--accent-bright);
 }
 .compact-tools,
 .compact-actions {
@@ -443,7 +443,7 @@
   flex-shrink: 0;
   width: 100%;
   min-height: 42px;
-  text-align: right;
+  text-align: start;
   border: 1px solid transparent;
   border-radius: 7px;
   background: #8888880d;

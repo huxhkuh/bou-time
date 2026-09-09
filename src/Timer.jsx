@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React, { useState, useRef } from "react";
 import { Play, Pause, Square, ArrowUpLeft, Clock3 } from "lucide-react";
 import { Button, ProjectOptions, Dot } from "./ui.jsx";
@@ -37,7 +38,7 @@ export default function Timer({
     try {
       const next = await mutate((s) => timerAction(s, cmd));
       if (type === "stop") {
-        notify("הזמן נשמר. עבודה טובה.");
+        notify(tr("הזמן נשמר. עבודה טובה."));
         if (t && now - t.createdAt > 12 * HOUR) {
           const e = next.entries.find((e) => e.id === t.id);
           if (e) editEntry(e);
@@ -50,17 +51,18 @@ export default function Timer({
     }
   };
   return (
-    <section className="timer" aria-label="מדידת עבודה">
+    <section className="timer" aria-label={tr("מדידת עבודה")}>
       <div className="timer-info">
         <div className="timer-status">
           <span
             className={`status-light ${t?.runningSince !== null && t ? "live" : ""}`}
           />
+
           {t
             ? t.runningSince === null
-              ? "המדידה מושהית"
-              : "עכשיו בעבודה"
-            : "מקום להתרכז"}
+              ? tr("המדידה מושהית")
+              : tr("עכשיו בעבודה")
+            : tr("מקום להתרכז")}
         </div>
         {t ? (
           <>
@@ -72,18 +74,19 @@ export default function Timer({
               {state.clients.find((c) => c.id === p?.clientId)?.name}
             </p>
             <p className="timer-description">
-              <bdi>{t.description || "זמן להתקדם בפרויקט שלך"}</bdi>
+              <bdi>{t.description || tr("זמן להתקדם בפרויקט שלך")}</bdi>
             </p>
           </>
         ) : (
           <>
-            <h2>מתחילים משהו טוב.</h2>
+            <h2>{tr("מתחילים משהו טוב.")}</h2>
             {selected ? (
               <div className="timer-fields">
                 <label>
-                  פרויקט למדידה
+                  {tr("פרויקט למדידה")}
+
                   <select
-                    aria-label="פרויקט למדידה"
+                    aria-label={tr("פרויקט למדידה")}
                     value={selected}
                     onChange={(e) => setProject(e.target.value)}
                   >
@@ -91,10 +94,11 @@ export default function Timer({
                   </select>
                 </label>
                 <label>
-                  על מה עובדים?
+                  {tr("על מה עובדים?")}
+
                   <input
-                    aria-label="תיאור המשימה"
-                    placeholder="תיאור קצר, אם מתחשק"
+                    aria-label={tr("תיאור המשימה")}
+                    placeholder={tr("תיאור קצר, אם מתחשק")}
                     maxLength={1000}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -102,26 +106,27 @@ export default function Timer({
                 </label>
               </div>
             ) : (
-              <p>הפרויקט הראשון שלך הוא נקודת ההתחלה.</p>
+              <p>{tr("הפרויקט הראשון שלך הוא נקודת ההתחלה.")}</p>
             )}
           </>
         )}
         {t && now - t.createdAt > 12 * HOUR && (
           <p className="timer-warning" role="status">
-            המדידה פתוחה מעל 12 שעות. עצור ושמור כדי לבדוק ולתקן את הסיום. הזמן
-            לא שונה אוטומטית.
+            {tr(
+              "המדידה פתוחה מעל 12 שעות. עצור ושמור כדי לבדוק ולתקן את הסיום. הזמן לא שונה אוטומטית.",
+            )}
           </p>
         )}
       </div>
       <div className="timer-controls">
         <div
           className="clock"
-          aria-label={`זמן שנמדד ${hms(elapsed(t, now))}`}
+          aria-label={tr("זמן שנמדד {0}", [hms(elapsed(t, now))])}
           dir="ltr"
         >
           {hms(elapsed(t, now))}
         </div>
-        <span className="clock-caption">שעות : דקות : שניות</span>
+        <span className="clock-caption">{tr("שעות : דקות : שניות")}</span>
         <div className="timer-buttons">
           {t ? (
             <React.Fragment key={t.id}>
@@ -133,7 +138,7 @@ export default function Timer({
                 onPointerDown={arm("stop")}
                 onClick={(e) => action("stop", e)}
               >
-                עצירה ושמירה
+                {tr("עצירה ושמירה")}
               </Button>
               <Button
                 key={t.runningSince === null ? "resume" : "pause"}
@@ -147,7 +152,7 @@ export default function Timer({
                   action(t.runningSince === null ? "resume" : "pause", e)
                 }
               >
-                {t.runningSince === null ? "המשך" : "השהיה"}
+                {t.runningSince === null ? tr("המשך") : tr("השהיה")}
               </Button>
             </React.Fragment>
           ) : (
@@ -159,13 +164,13 @@ export default function Timer({
               onPointerDown={arm("start")}
               onClick={(e) => (selected ? action("start", e) : newProject())}
             >
-              {selected ? "התחל מדידה" : "צור פרויקט ראשון"}
+              {selected ? tr("התחל מדידה") : tr("צור פרויקט ראשון")}
             </Button>
           )}
         </div>
         <span className="timer-foot">
           <Clock3 size={13} />
-          הזמן נשמר, גם כשסוגרים את הדפדפן
+          {tr("הזמן נשמר, גם כשסוגרים את הדפדפן")}
         </span>
       </div>
     </section>

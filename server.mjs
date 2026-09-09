@@ -13,6 +13,7 @@ const types = {
   ".png": "image/png",
   ".woff2": "font/woff2",
 };
+const port = Number(process.env.PORT || 5173);
 const server = http.createServer(async (req, res) => {
   try {
     if (req.method !== "GET" && req.method !== "HEAD") {
@@ -58,8 +59,8 @@ server.on("error", (e) => {
   );
   process.exitCode = 1;
 });
-server.listen(5173, "127.0.0.1", () =>
+server.listen(port, "127.0.0.1", () =>
   console.log(
-    "בואו מוכנה: http://127.0.0.1:5173\nהנתונים נשמרים בדפדפן. Ctrl+C לסגירת השרת.",
+    `תמורה מוכנה: http://127.0.0.1:${port}\nהנתונים נשמרים בדפדפן. Ctrl+C לסגירת השרת.`,
   ),
 );

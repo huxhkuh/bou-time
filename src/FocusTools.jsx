@@ -1,3 +1,5 @@
+import { applyPreferences, getPreferences } from "./preferences.js";
+import { tr } from "./i18n.js";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -54,7 +56,7 @@ function FullClockScreen({
         timerAction(s, { type, projectId: selected, expected: t?.id ?? null }),
       );
       if (type === "stop" && next.entries.some((e) => e.id === t?.id)) {
-        setMessage("הזמן נשמר. עבודה טובה.");
+        setMessage(tr("הזמן נשמר. עבודה טובה."));
         if (now - t.createdAt > 12 * HOUR)
           showEntry(next.entries.find((e) => e.id === t.id));
       }
@@ -67,34 +69,39 @@ function FullClockScreen({
   return (
     <section
       className={`focus-clock ${large ? "is-large" : ""} ${light ? "is-light" : ""}`}
-      aria-label={large ? "שעון מיקוד" : "שעון צף"}
+      aria-label={large ? tr("שעון מיקוד") : tr("שעון צף")}
     >
       <header className="focus-top">
         <span className="focus-brand">
-          תמורה<span>.</span>
+          {tr("תמורה")}
+          <span>.</span>
         </span>
         <span className="focus-state">
           <i className={t?.runningSince != null ? "is-running" : ""} />
-          {t ? (t.runningSince === null ? "מושהה" : "במדידה") : "זמן להתחיל"}
+          {t
+            ? t.runningSince === null
+              ? tr("מושהה")
+              : tr("במדידה")
+            : tr("זמן להתחיל")}
         </span>
         <div className="focus-top-actions">
           {large && (
             <button
-              aria-label="פתיחת צג צף מתוך מיקוד"
-              title="צג צף"
+              aria-label={tr("פתיחת צג צף מתוך מיקוד")}
+              title={tr("צג צף")}
               onClick={openFloating}
             >
               <PictureInPicture2 size={18} />
             </button>
           )}
           <button
-            aria-label={light ? "מעבר לצג כהה" : "מעבר לצג בהיר"}
+            aria-label={light ? tr("מעבר לצג כהה") : tr("מעבר לצג בהיר")}
             onClick={() => setLight(!light)}
           >
             {light ? <Moon size={17} /> : <Sun size={17} />}
           </button>
           <button
-            aria-label={large ? "יציאה ממצב מיקוד" : "סגירת הצג הצף"}
+            aria-label={large ? tr("יציאה ממצב מיקוד") : tr("סגירת הצג הצף")}
             onClick={close}
           >
             <X size={18} />
@@ -118,22 +125,24 @@ function FullClockScreen({
           </>
         ) : (
           <label>
-            <span className="sr-only">פרויקט בצג</span>
+            <span className="sr-only">{tr("פרויקט בצג")}</span>
             <select
-              aria-label="פרויקט בצג"
+              aria-label={tr("פרויקט בצג")}
               value={selected}
               onChange={(e) => setProject(e.target.value)}
               disabled={!selected}
             >
               {!selected && (
-                <option value="">צור פרויקט באפליקציה כדי להתחיל</option>
+                <option value="">
+                  {tr("צור פרויקט באפליקציה כדי להתחיל")}
+                </option>
               )}
               <ProjectOptions state={state} />
             </select>
           </label>
         )}
       </div>
-      <div className="focus-digits" dir="ltr" aria-label="זמן בצג">
+      <div className="focus-digits" dir="ltr" aria-label={tr("זמן בצג")}>
         {hms(elapsed(t, now))}
       </div>
       <div className="focus-controls">
@@ -150,7 +159,7 @@ function FullClockScreen({
               ) : (
                 <Pause size={17} />
               )}{" "}
-              {t.runningSince === null ? "המשך" : "השהיה"}
+              {t.runningSince === null ? tr("המשך") : tr("השהיה")}
             </button>
             <button
               key="stop"
@@ -159,7 +168,7 @@ function FullClockScreen({
               onClick={() => act("stop")}
             >
               <Square size={15} />
-              עצירה ושמירה
+              {tr("עצירה ושמירה")}
             </button>
           </React.Fragment>
         ) : (
@@ -170,20 +179,20 @@ function FullClockScreen({
             onClick={() => act("start")}
           >
             <Play size={17} />
-            התחל מדידה
+            {tr("התחל מדידה")}
           </button>
         )}
       </div>
       {t && now - t.createdAt > 12 * HOUR ? (
         <p className="focus-warning" role="status">
-          מעל 12 שעות — עצור ובדוק את שעת הסיום.
+          {tr("מעל 12 שעות \u2014 עצור ובדוק את שעת הסיום.")}
         </p>
       ) : (
         <p className="focus-caption" role="status">
           {message ||
             (large
-              ? "רק אתה, הפרויקט והזמן שלך."
-              : "סגירת הצג לא עוצרת את המדידה")}
+              ? tr("רק אתה, הפרויקט והזמן שלך.")
+              : tr("סגירת הצג לא עוצרת את המדידה"))}
         </p>
       )}
       {message && t && now - t.createdAt > 12 * HOUR && (
@@ -198,6 +207,10 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
   const [focus, setFocus] = useState(false);
   const [help, setHelp] = useState(false);
   const opening = useRef(false);
+  const prefs = getPreferences();
+  useEffect(() => {
+    if (pip) applyPreferences(pip.document);
+  }, [pip, prefs]);
   const currentWindow = useRef(null);
   const supported =
     typeof window.documentPictureInPicture?.requestWindow === "function";
@@ -207,14 +220,14 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
     window.focus();
     setFocus(false);
     editEntry(entry);
-    notify("הזמן נשמר. בדיקת שעת הסיום נפתחה באפליקציה.");
+    notify(tr("הזמן נשמר. בדיקת שעת הסיום נפתחה באפליקציה."));
   }
   async function openFloating() {
     if (window.bouDesktop) {
       try {
         await window.bouDesktop.openFloating();
       } catch {
-        notify("לא הצלחנו לפתוח את הצג הצף. נסה שוב.", true);
+        notify(tr("לא הצלחנו לפתוח את הצג הצף. נסה שוב."), true);
       }
       return;
     }
@@ -235,9 +248,8 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
         height: 260,
       });
       currentWindow.current = child;
-      child.document.documentElement.lang = "he";
-      child.document.documentElement.dir = "rtl";
-      child.document.title = "תמורה · צג צף";
+      applyPreferences(child.document);
+      child.document.title = tr("תמורה · צג צף");
       child.document.body.className = "pip-body";
       // Linked styles keep absolute asset URLs and local fonts working under the production CSP.
       document
@@ -289,14 +301,18 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
     <>
       <div className="focus-tools">
         <Button icon={Scan} onClick={() => setFocus(true)} title="Alt+F">
-          מצב מיקוד
+          {tr("מצב מיקוד")}
         </Button>
         <Button icon={PictureInPicture2} onClick={openFloating} title="Alt+P">
-          {pip ? "הצג הצף פתוח" : "צג צף"}
+          {pip ? tr("הצג הצף פתוח") : tr("צג צף")}
         </Button>
       </div>
       {focus && (
-        <Modal title="מצב מיקוד" className="focus-dialog" close={closeFocus}>
+        <Modal
+          title={tr("מצב מיקוד")}
+          className="focus-dialog"
+          close={closeFocus}
+        >
           <ClockScreen
             {...{ state, mutate, showEntry }}
             large
@@ -306,18 +322,21 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
         </Modal>
       )}
       {help && (
-        <Modal title="צג מעל החלונות" close={() => setHelp(false)}>
+        <Modal title={tr("צג מעל החלונות")} close={() => setHelp(false)}>
           <p>
-            הדפדפן הזה לא הצליח לפתוח צג צף. אפשר להשתמש ב־Chrome או Edge במחשב
-            וללחוץ שוב על ״צג צף״.
+            {tr(
+              "הדפדפן הזה לא הצליח לפתוח צג צף. אפשר להשתמש ב־Chrome או Edge במחשב וללחוץ שוב על ״צג צף״.",
+            )}
           </p>
           <p className="note">
-            הצג נשאר מעל חלונות אחרים כל עוד לשונית האפליקציה פתוחה. אפשר לגרור
-            אותו ולשנות את גודלו. סגירת הצג אינה עוצרת את הטיימר.
+            {tr(
+              "הצג נשאר מעל חלונות אחרים כל עוד לשונית האפליקציה פתוחה. אפשר לגרור אותו ולשנות את גודלו. סגירת הצג אינה עוצרת את הטיימר.",
+            )}
           </p>
           <p className="note">
-            במעבר לדפדפן אחר הנתונים נפרדים. העבר אותם דרך גיבוי והגדרות → ייצוא
-            גיבוי מלא וייבוא בדפדפן החדש.
+            {tr(
+              "במעבר לדפדפן אחר הנתונים נפרדים. העבר אותם דרך גיבוי והגדרות \u2192 ייצוא גיבוי מלא וייבוא בדפדפן החדש.",
+            )}
           </p>
           <div className="form-footer">
             <Button
@@ -327,9 +346,9 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
                 setFocus(true);
               }}
             >
-              פתיחת מצב מיקוד כאן
+              {tr("פתיחת מצב מיקוד כאן")}
             </Button>
-            <Button onClick={() => setHelp(false)}>סגירה</Button>
+            <Button onClick={() => setHelp(false)}>{tr("סגירה")}</Button>
           </div>
         </Modal>
       )}
@@ -341,6 +360,7 @@ export default function FocusTools({ state, mutate, notify, editEntry }) {
             owner={pip}
             close={() => pip.close()}
           />,
+
           pip.document.body,
         )}
     </>

@@ -133,6 +133,22 @@ try {
   expect((await snapshot(page)).timer.id).toBe(running);
   await page.getByRole("button", { name: "עצירה ושמירה", exact: true }).click();
   expect((await snapshot(page)).entries).toHaveLength(2);
+  await page.getByRole("button", { name: "גיבוי והגדרות", exact: true }).click();
+  await page.getByLabel("שפת הממשק", { exact: true }).selectOption("en");
+  await page.getByRole("radio", { name: "Forest", exact: true }).check();
+  await page.getByRole("button", { name: "Floating timer", exact: true }).click();
+  await expect.poll(() => app.windows().length).toBe(2);
+  child = app.windows().find((w) => w !== page);
+  await expect(child.locator("html")).toHaveAttribute("dir", "ltr");
+  await expect(child.locator("html")).toHaveAttribute("data-theme", "forest");
+  await child.getByRole("button", { name: "Work on עיצוב האתר", exact: true }).click();
+  await expect(child.getByRole("button", { name: "Pause", exact: true })).toBeVisible();
+  expect(await child.evaluate(() => document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight)).toBe(true);
+  await child.screenshot({ path: "../windows-tiny-english.png" });
+  await page.getByLabel("Interface language", { exact: true }).selectOption("he");
+  await expect(child.locator("html")).toHaveAttribute("dir", "rtl");
+  await child.getByRole("button", { name: "עצירה ושמירה", exact: true }).click();
+  await child.getByRole("button", { name: "סגירת הצג הצף", exact: true }).click();
   console.log(
     JSON.stringify({
       passed: true,
@@ -146,6 +162,7 @@ try {
         "340x217 expanded size",
         "no overflow",
         "close and restart persistence",
+        "English tiny layout and live language/theme sync",
       ],
     }),
   );

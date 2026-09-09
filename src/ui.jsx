@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React, { useEffect, useRef, useId } from "react";
 import { X, Inbox } from "lucide-react";
 export function Button({ children, icon: Icon, kind = "", ...props }) {
@@ -55,7 +56,11 @@ export function Modal({ title, close, children, className = "" }) {
       <div className="dialog-body">
         <header className="section-head">
           <h2 id={titleId}>{title}</h2>
-          <button className="icon-button" aria-label="סגירה" onClick={close}>
+          <button
+            className="icon-button"
+            aria-label={tr("סגירה")}
+            onClick={close}
+          >
             <X size={22} />
           </button>
         </header>
@@ -72,7 +77,7 @@ export function ProjectOptions({ state, includeArchived = false }) {
         .map((p) => (
           <option key={p.id} value={p.id}>
             {p.name} · {state.clients.find((c) => c.id === p.clientId)?.name}
-            {p.archived ? " (בארכיון)" : ""}
+            {p.archived ? tr(" (בארכיון)") : ""}
           </option>
         ))}
     </>

@@ -1,0 +1,141 @@
+:root {
+  --accent-bright: #df986e;
+  --accent-soft: #f0e4d9;
+  --accent-hover: #843b23;
+}
+:root[data-theme="forest"] {
+  --accent: #326b50;
+  --accent-hover: #24543d;
+  --accent-bright: #98cda6;
+  --accent-soft: #e2eee4;
+  --cream: #f0f4ee;
+  --surface: #fbfdf9;
+}
+:root[data-theme="ocean"] {
+  --accent: #25618b;
+  --accent-hover: #1b4969;
+  --accent-bright: #91c6e9;
+  --accent-soft: #e0edf7;
+  --cream: #eef3f6;
+  --surface: #fcfdff;
+}
+:root[data-theme="plum"] {
+  --accent: #794970;
+  --accent-hover: #603559;
+  --accent-bright: #d8acd0;
+  --accent-soft: #efe3ec;
+  --cream: #f5eff3;
+  --surface: #fffafd;
+}
+.appearance-settings .field {
+  margin-top: 20px;
+}
+.theme-picker {
+  border: 0;
+  padding: 0;
+  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.theme-picker legend {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.theme-picker label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--surface);
+}
+.theme-picker label:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.theme-picker input {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+.theme-swatch {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #ad4826;
+  flex: none;
+}
+[data-palette="forest"] .theme-swatch {
+  background: #326b50;
+}
+[data-palette="ocean"] .theme-swatch {
+  background: #25618b;
+}
+[data-palette="plum"] .theme-swatch {
+  background: #794970;
+}
+.sidebar,
+.surface,
+.project-card,
+.client-card {
+  background: var(--surface);
+}
+.sidebar nav button.active {
+  color: var(--accent-hover);
+  background: var(--accent-soft);
+  box-shadow: inset -3px 0 var(--accent);
+}
+[dir="ltr"] .sidebar nav button.active {
+  box-shadow: inset 3px 0 var(--accent);
+}
+.sidebar nav button.active svg,
+.brand > span,
+.section-icon {
+  color: var(--accent);
+}
+.button.primary,
+.timer-start,
+.focus-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.button.primary:hover:not(:disabled),
+.focus-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.version-pill {
+  color: var(--accent-hover);
+  background: var(--accent-soft);
+}
+.project-checklist {
+  background: var(--cream);
+}
+::selection {
+  background: var(--accent-soft);
+}
+[dir="ltr"] .brand {
+  font-size: 40px;
+  letter-spacing: -1.5px;
+  padding-inline: 6px;
+}
+[dir="ltr"] .brand small {
+  letter-spacing: 0;
+}
+[dir="ltr"] .page-header h1 {
+  letter-spacing: -0.7px;
+}
+[dir="ltr"] .compact-clock.is-tiny .compact-project {
+  min-width: 0;
+}
+[dir="ltr"] .compact-clock.is-tiny .compact-status {
+  font-size: 9px;
+}
+@media (max-width: 600px) {
+  .theme-picker {
+    grid-template-columns: 1fr;
+  }
+}

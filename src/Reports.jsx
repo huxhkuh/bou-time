@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React, { useState } from "react";
 import { Download } from "lucide-react";
 import { Field, Button, Dot, Empty } from "./ui.jsx";
@@ -31,7 +32,7 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
   let entries = [],
     error = "";
   try {
-    if (from > to) throw Error("תאריך הסיום צריך להיות אחרי תאריך ההתחלה.");
+    if (from > to) throw Error(tr("תאריך הסיום צריך להיות אחרי תאריך ההתחלה."));
     entries = sliceEntries(
       state.entries.filter((e) => {
         const p = state.projects.find((p) => p.id === e.projectId);
@@ -61,21 +62,21 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
   return (
     <>
       <div className="surface report-filter">
-        <Field label="מתאריך">
+        <Field label={tr("מתאריך")}>
           <input
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
           />
         </Field>
-        <Field label="עד תאריך">
+        <Field label={tr("עד תאריך")}>
           <input
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
           />
         </Field>
-        <Field label="לקוח">
+        <Field label={tr("לקוח")}>
           <select
             value={client}
             onChange={(e) => {
@@ -83,7 +84,7 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
               setProject("");
             }}
           >
-            <option value="">כל הלקוחות</option>
+            <option value="">{tr("כל הלקוחות")}</option>
             {state.clients.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -91,9 +92,9 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
             ))}
           </select>
         </Field>
-        <Field label="פרויקט">
+        <Field label={tr("פרויקט")}>
           <select value={project} onChange={(e) => setProject(e.target.value)}>
-            <option value="">כל הפרויקטים</option>
+            <option value="">{tr("כל הפרויקטים")}</option>
             {state.projects
               .filter((p) => !client || p.clientId === client)
               .map((p) => (
@@ -112,10 +113,10 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
               csv(entries, state),
               "text/csv;charset=utf-8",
             );
-            notify("קובץ CSV הוכן להורדה.");
+            notify(tr("קובץ CSV הוכן להורדה."));
           }}
         >
-          ייצוא CSV
+          {tr("ייצוא CSV")}
         </Button>
       </div>
       {error && (
@@ -125,33 +126,34 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
       )}
       <div className="metrics">
         <div>
-          <span>שעות בטווח שנבחר</span>
+          <span>{tr("שעות בטווח שנבחר")}</span>
           <strong>
             {hours(sum(entries))}
-            <small> שעות</small>
+            <small>{tr(" שעות")}</small>
           </strong>
         </div>
         <div>
-          <span>שווי לפי תעריפים שנשמרו</span>
+          <span>{tr("שווי לפי תעריפים שנשמרו")}</span>
           <strong>{money(worth(entries))}</strong>
         </div>
         <div>
-          <span>רישומי עבודה</span>
+          <span>{tr("רישומי עבודה")}</span>
           <strong>{entries.length}</strong>
         </div>
       </div>
       <p className="note report-note">
-        השווי כולל רישומים בתמחור שעתי בלבד. מחיר כולל ותמורה אפקטיבית מוצגים
-        בפרויקטים, ואינם הכנסה נוספת לכל רישום. טיימר שטרם נשמר אינו כלול בדוח.
+        {tr(
+          "השווי כולל רישומים בתמחור שעתי בלבד. מחיר כולל ותמורה אפקטיבית מוצגים בפרויקטים, ואינם הכנסה נוספת לכל רישום. טיימר שטרם נשמר אינו כלול בדוח.",
+        )}
       </p>
       <section className="surface">
         <div className="section-head">
-          <h2>התמונה לאורך זמן</h2>
+          <h2>{tr("התמונה לאורך זמן")}</h2>
           <div className="tabs">
             {[
-              ["day", "יומי"],
-              ["week", "שבועי"],
-              ["month", "חודשי"],
+              ["day", tr("יומי")],
+              ["week", tr("שבועי")],
+              ["month", tr("חודשי")],
             ].map(([k, l]) => (
               <button
                 key={k}
@@ -171,28 +173,33 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
               .map(([key, es]) => (
                 <div className="summary-row" key={key}>
                   <span>
-                    {group === "week" ? "שבוע שמתחיל ב־" : ""}
+                    {group === "week" ? tr("שבוע שמתחיל ב־") : ""}
                     <bdi>{key}</bdi>
                   </span>
-                  <bdi>{hours(sum(es))} שעות</bdi>
+                  <bdi>
+                    {hours(sum(es))}
+                    {tr(" שעות")}
+                  </bdi>
                   <bdi>{money(worth(es))}</bdi>
                 </div>
               ))}
           </div>
         ) : (
-          <Empty title="הדוח הבא שלך מתחיל בשעה הראשונה">
-            הוסף רישום או בחר טווח תאריכים אחר.
+          <Empty title={tr("הדוח הבא שלך מתחיל בשעה הראשונה")}>
+            {tr("הוסף רישום או בחר טווח תאריכים אחר.")}
           </Empty>
         )}
       </section>
       <div className="dashboard-columns report-groups">
         {[
           [
-            "לפי לקוח",
+            tr("לפי לקוח"),
+
             state.clients,
             (e) => state.projects.find((p) => p.id === e.projectId)?.clientId,
           ],
-          ["לפי פרויקט", state.projects, (e) => e.projectId],
+
+          [tr("לפי פרויקט"), state.projects, (e) => e.projectId],
         ].map(([label, items, key]) => (
           <section className="surface" key={label}>
             <h2>{label}</h2>
@@ -206,19 +213,24 @@ export default function Reports({ state, now, editEntry, remove, notify }) {
                       {x.color && <Dot color={x.color} />}
                       <bdi>{x.name}</bdi>
                     </span>
-                    <bdi>{hours(sum(es))} שע׳</bdi>
+                    <bdi>
+                      {hours(sum(es))}
+                      {tr(" שע׳")}
+                    </bdi>
                     <bdi>{money(worth(es))}</bdi>
                   </div>
                 );
               })}
-            {!entries.length && <p className="muted">אין שעות בטווח שנבחר.</p>}
+            {!entries.length && (
+              <p className="muted">{tr("אין שעות בטווח שנבחר.")}</p>
+            )}
           </section>
         ))}
       </div>
       <section className="surface entries-section">
         <div className="section-head">
-          <h2>רישומי העבודה</h2>
-          <span className="muted">שעות מדויקות, ללא עיגול בחישוב</span>
+          <h2>{tr("רישומי העבודה")}</h2>
+          <span className="muted">{tr("שעות מדויקות, ללא עיגול בחישוב")}</span>
         </div>
         <Entries
           {...{ state, remove }}

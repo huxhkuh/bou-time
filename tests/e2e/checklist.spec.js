@@ -82,7 +82,7 @@ test("project checklist CRUD, tab sync, project edit, reload, full backup/restor
   const clean = await browser.newContext();
   try {
     const restored = await clean.newPage();
-    await restored.goto("http://127.0.0.1:5173/");
+    await restored.goto("http://127.0.0.1:5184/");
     await restored.getByRole("button", { name: "גיבוי והגדרות", exact: true }).click();
     for (let i = 0; i < 2; i++) {
       await restored.getByLabel("בחירת קובץ גיבוי לשחזור").setInputFiles({ name: "checklist-backup.json", mimeType: "application/json", buffer: bytes });

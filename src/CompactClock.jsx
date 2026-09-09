@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Minimize2,
@@ -56,7 +57,7 @@ export default function CompactClock({
     if (window.bouDesktop?.resizeFloating)
       window.bouDesktop
         .resizeFloating(width, height)
-        .catch(() => setError("לא ניתן לשנות את גודל החלון כרגע."));
+        .catch(() => setError(tr("לא ניתן לשנות את גודל החלון כרגע.")));
     else if (owner !== window) {
       try {
         owner.resizeTo(width, height);
@@ -94,34 +95,35 @@ export default function CompactClock({
       setBusy(false);
     }
   }
-  const pauseLabel = timer?.runningSince === null ? "המשך" : "השהיה";
+  const pauseLabel = timer?.runningSince === null ? tr("המשך") : tr("השהיה");
   return (
     <section
       className={`compact-clock ${tiny ? "is-tiny" : ""} ${light ? "is-light" : ""}`}
-      aria-label="שעון צף"
+      aria-label={tr("שעון צף")}
     >
       <header className="compact-header">
         <span className="compact-brand">
-          תמורה<span>.</span>
+          {tr("תמורה")}
+          <span>.</span>
         </span>
         <div className="compact-tools">
           <button
-            title={tiny ? "הגדלת הצג" : "מצב זעיר"}
-            aria-label={tiny ? "הגדלת הצג" : "מצב זעיר"}
+            title={tiny ? tr("הגדלת הצג") : tr("מצב זעיר")}
+            aria-label={tiny ? tr("הגדלת הצג") : tr("מצב זעיר")}
             onClick={() => setTiny(!tiny)}
           >
             {tiny ? <Maximize2 /> : <Minimize2 />}
           </button>
           <button
-            title={light ? "מעבר לצג כהה" : "מעבר לצג בהיר"}
-            aria-label={light ? "מעבר לצג כהה" : "מעבר לצג בהיר"}
+            title={light ? tr("מעבר לצג כהה") : tr("מעבר לצג בהיר")}
+            aria-label={light ? tr("מעבר לצג כהה") : tr("מעבר לצג בהיר")}
             onClick={() => setLight(!light)}
           >
             {light ? <Moon /> : <Sun />}
           </button>
           <button
-            title="סגירת הצג הצף"
-            aria-label="סגירת הצג הצף"
+            title={tr("סגירת הצג הצף")}
+            aria-label={tr("סגירת הצג הצף")}
             onClick={close}
           >
             <X />
@@ -129,7 +131,7 @@ export default function CompactClock({
         </div>
       </header>
       <div className="compact-measure">
-        <span className="focus-digits" dir="ltr" aria-label="זמן בצג">
+        <span className="focus-digits" dir="ltr" aria-label={tr("זמן בצג")}>
           {hms(elapsed(timer, now))}
         </span>
         <div className="compact-actions">
@@ -149,8 +151,8 @@ export default function CompactClock({
               <button
                 key="stop"
                 className="compact-stop"
-                title="עצירה ושמירה"
-                aria-label="עצירה ושמירה"
+                title={tr("עצירה ושמירה")}
+                aria-label={tr("עצירה ושמירה")}
                 disabled={busy}
                 onClick={() => act("stop")}
               >
@@ -160,8 +162,8 @@ export default function CompactClock({
           ) : (
             <button
               key="start"
-              title="התחל מדידה"
-              aria-label="התחל מדידה"
+              title={tr("התחל מדידה")}
+              aria-label={tr("התחל מדידה")}
               disabled={busy || !projects.length}
               onClick={() => act("start")}
             >
@@ -173,7 +175,7 @@ export default function CompactClock({
       <div
         className="compact-projects"
         role="group"
-        aria-label="מעבר בין פרויקטים"
+        aria-label={tr("מעבר בין פרויקטים")}
       >
         {projects.map((p) => (
           <button
@@ -181,9 +183,9 @@ export default function CompactClock({
             className={`compact-project ${timer?.projectId === p.id ? "is-active" : ""}`}
             style={{ "--project-color": p.color }}
             disabled={busy}
-            aria-label={`עבודה על ${p.name}`}
+            aria-label={tr("עבודה על {0}", [p.name])}
             aria-pressed={timer?.projectId === p.id}
-            title={`${p.name} · ${state.clients.find((c) => c.id === p.clientId)?.name || ""}${timer?.projectId === p.id ? "" : " — לחיצה שומרת את המדידה הקודמת ומתחילה כאן"}`}
+            title={`${p.name} · ${state.clients.find((c) => c.id === p.clientId)?.name || ""}${timer?.projectId === p.id ? "" : tr(" \u2014 לחיצה שומרת את המדידה הקודמת ומתחילה כאן")}`}
             onClick={() => act("start", p.id)}
           >
             <i className="compact-project-dot" />
@@ -200,7 +202,9 @@ export default function CompactClock({
             {timer?.projectId === p.id ? (
               <span
                 className="compact-running"
-                aria-label={timer.runningSince === null ? "מושהה" : "במדידה"}
+                aria-label={
+                  timer.runningSince === null ? tr("מושהה") : tr("במדידה")
+                }
               >
                 {timer.runningSince === null ? (
                   <Pause />
@@ -214,12 +218,14 @@ export default function CompactClock({
           </button>
         ))}
         {!projects.length && (
-          <p className="compact-empty">צור פרויקט באפליקציה כדי להתחיל.</p>
+          <p className="compact-empty">
+            {tr("צור פרויקט באפליקציה כדי להתחיל.")}
+          </p>
         )}
       </div>
       {long && (
         <p className="compact-warning" role="status">
-          מעל 12 שעות — עצור ובדוק את הסיום.
+          {tr("מעל 12 שעות \u2014 עצור ובדוק את הסיום.")}
         </p>
       )}
       {error && (

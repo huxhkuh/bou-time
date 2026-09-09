@@ -56,7 +56,7 @@ test("normal browser profile is installable and timer survives complete browser 
   });
   try {
     let page = await context.newPage();
-    await page.goto("http://127.0.0.1:5173/");
+    await page.goto("http://127.0.0.1:5184/");
     test.skip(
       !(
         await page.locator("script[type=module]").getAttribute("src")
@@ -91,7 +91,7 @@ test("normal browser profile is installable and timer survives complete browser 
       headless: true,
     });
     page = await context.newPage();
-    await page.goto("http://127.0.0.1:5173/");
+    await page.goto("http://127.0.0.1:5184/");
     await expect(
       page.getByRole("button", { name: "השהיה", exact: true }),
     ).toBeVisible();

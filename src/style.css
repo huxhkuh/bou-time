@@ -44,12 +44,12 @@ textarea {
 }
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid #b94f2a;
+  outline: 3px solid var(--accent);
 }
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid #b94f2a;
+  outline: 2px solid var(--accent);
 }
 h1,
 h2,
@@ -103,11 +103,11 @@ bdi {
 }
 .sidebar {
   position: fixed;
-  right: 0;
+  inset-inline-start: 0;
   top: 0;
   bottom: 0;
   width: 216px;
-  border-left: 1px solid var(--line);
+  border-inline-end: 1px solid var(--line);
   padding: 37px 22px;
   background: #eeede4;
   display: flex;
@@ -146,7 +146,7 @@ bdi {
   gap: 13px;
   padding: 13px 17px;
   border-radius: 9px;
-  text-align: right;
+  text-align: start;
   font-size: 14px;
   transition: background 0.15s;
 }
@@ -170,7 +170,7 @@ bdi {
   display: block;
   font-size: 10px;
   color: #72736a;
-  margin-right: 13px;
+  margin-inline-start: 13px;
 }
 .local-dot,
 .status-light {
@@ -179,10 +179,10 @@ bdi {
   border-radius: 50%;
   background: #698164;
   display: inline-block;
-  margin-left: 7px;
+  margin-inline-end: 7px;
 }
 .main {
-  margin-right: 216px;
+  margin-inline-start: 216px;
   padding: 40px 46px 20px;
   max-width: 1740px;
 }
@@ -396,13 +396,13 @@ bdi {
 }
 .metrics > div {
   padding: 0 30px;
-  border-left: 1px solid var(--line);
+  border-inline-end: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .metrics > div:first-child {
-  padding-right: 0;
+  padding-inline-start: 0;
 }
 .metrics > div:last-child {
   border: 0;
@@ -417,7 +417,7 @@ bdi {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   direction: rtl;
-  text-align: right;
+  text-align: start;
 }
 .metrics strong small {
   font-size: 12px;
@@ -511,12 +511,12 @@ bdi {
   display: inline-block;
   flex-shrink: 0;
   vertical-align: middle;
-  margin-left: 8px;
+  margin-inline-end: 8px;
 }
 .recent-row > .dot {
   width: 10px;
   height: 10px;
-  margin-left: 0;
+  margin-inline-end: 0;
 }
 .start-project {
   width: 35px;
@@ -561,7 +561,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
-  text-align: right;
+  text-align: start;
 }
 th {
   font-weight: 400;
@@ -589,7 +589,7 @@ tr:last-child td {
   display: inline-block;
 }
 .row-title + .subtext {
-  padding-right: 17px;
+  padding-inline-start: 17px;
   margin-top: 4px;
 }
 .time-range {
@@ -621,7 +621,7 @@ tr:last-child td {
   margin-bottom: 25px;
 }
 .toolbar > .button:last-child {
-  margin-right: auto;
+  margin-inline-start: auto;
 }
 .toolbar p {
   font-size: 14px;
@@ -779,7 +779,7 @@ tr:last-child td {
   border: 0;
 }
 .summary-row > bdi {
-  text-align: left;
+  text-align: end;
   white-space: nowrap;
 }
 .summary-row > span {
@@ -881,7 +881,7 @@ dialog::backdrop {
 .field input[type="time"],
 .field input[type="number"] {
   direction: ltr;
-  text-align: right;
+  text-align: start;
 }
 .field small {
   font-size: 11px;
@@ -923,8 +923,8 @@ dialog::backdrop {
 .toast {
   position: fixed;
   bottom: 25px;
-  left: 30px;
-  right: auto;
+  inset-inline-end: 30px;
+  inset-inline-start: auto;
   z-index: 20;
   max-width: min(550px, calc(100vw - 35px));
   background: var(--ink);
@@ -966,7 +966,7 @@ dialog::backdrop {
   font-size: 13px;
 }
 .mini-timer > bdi:nth-of-type(2) {
-  margin-right: auto;
+  margin-inline-start: auto;
   font-family: Consolas, monospace;
   font-size: 18px;
 }
@@ -977,7 +977,7 @@ dialog::backdrop {
 .skip-link {
   position: fixed;
   top: -100px;
-  right: 230px;
+  inset-inline-start: 230px;
   background: var(--ink);
   color: white;
   padding: 12px;
@@ -996,8 +996,8 @@ dialog::backdrop {
 }
 @media (min-width: 1600px) {
   .main {
-    padding-right: 65px;
-    padding-left: 65px;
+    padding-inline-start: 65px;
+    padding-inline-end: 65px;
   }
   .timer {
     min-height: 285px;
@@ -1012,7 +1012,7 @@ dialog::backdrop {
     padding: 32px 15px;
   }
   .main {
-    margin-right: 185px;
+    margin-inline-start: 185px;
     padding: 30px 26px;
   }
   .timer {
@@ -1033,8 +1033,8 @@ dialog::backdrop {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .metrics > div {
-    padding-left: 15px;
-    padding-right: 20px;
+    padding-inline-end: 15px;
+    padding-inline-start: 20px;
   }
   .surface {
     padding: 21px;
@@ -1059,7 +1059,7 @@ dialog::backdrop {
   .sidebar {
     position: static;
     width: auto;
-    border-left: 0;
+    border-inline-end: 0;
     border-bottom: 1px solid var(--line);
     padding: 17px 23px 0;
     display: block;
@@ -1073,7 +1073,7 @@ dialog::backdrop {
   .brand small {
     display: inline;
     font-size: 10px;
-    margin-right: 14px;
+    margin-inline-start: 14px;
     letter-spacing: 0;
   }
   .sidebar nav {
@@ -1110,7 +1110,7 @@ dialog::backdrop {
     gap: 17px;
   }
   .skip-link {
-    right: 15px;
+    inset-inline-start: 15px;
   }
 }
 @media (max-width: 600px) {
@@ -1314,7 +1314,7 @@ dialog::backdrop {
   }
   .toast {
     bottom: 15px;
-    left: 16px;
+    inset-inline-end: 16px;
     font-size: 12px;
   }
   .mini-timer {
@@ -1339,11 +1339,52 @@ dialog::backdrop {
   }
 }
 /* Desktop updates share the local settings surface and its keyboard controls. */
-.update-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
-.version-pill { background: #eae5db; border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #484b43; white-space: nowrap; }
-.update-state { display: grid; gap: 6px; padding: 16px; background: #f1eee7; border-inline-start: 3px solid #ab492b; border-radius: 8px; margin-block: 20px; }
-.update-state span { color: #5c6056; font-size: 13px; }
-.update-error { background: #fff0e9; }
-.update-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.update-progress { display: flex; align-items: center; gap: 12px; margin-block: 16px; font-variant-numeric: tabular-nums; }
-.update-progress progress { flex: 1; min-width: 0; height: 8px; accent-color: #ab492b; }
+.update-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+.version-pill {
+  background: #eae5db;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #484b43;
+  white-space: nowrap;
+}
+.update-state {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  background: #f1eee7;
+  border-inline-start: 3px solid #ab492b;
+  border-radius: 8px;
+  margin-block: 20px;
+}
+.update-state span {
+  color: #5c6056;
+  font-size: 13px;
+}
+.update-error {
+  background: #fff0e9;
+}
+.update-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.update-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-block: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.update-progress progress {
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  accent-color: #ab492b;
+}

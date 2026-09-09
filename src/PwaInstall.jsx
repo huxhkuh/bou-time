@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React, { useState, useEffect } from "react";
 import { MonitorDown } from "lucide-react";
 import { Button } from "./ui.jsx";
@@ -18,11 +19,11 @@ export default function PwaInstall() {
   return (
     <section className="surface">
       <MonitorDown className="section-icon" />
-      <h2>תמורה, גם בלי לשונית</h2>
+      <h2>{tr("תמורה, גם בלי לשונית")}</h2>
       <p>
-        בגרסת ההפעלה ניתן להתקין דרך תפריט Chrome או Edge: התקנת אפליקציה. אחרי
-        פתיחה ראשונה, הקבצים נשמרים לשימוש גם בלי רשת. הנתונים נשארים באותו
-        דפדפן.
+        {tr(
+          "בגרסת ההפעלה ניתן להתקין דרך תפריט Chrome או Edge: התקנת אפליקציה. אחרי פתיחה ראשונה, הקבצים נשמרים לשימוש גם בלי רשת. הנתונים נשארים באותו דפדפן.",
+        )}
       </p>
       {ready && (
         <Button
@@ -35,21 +36,22 @@ export default function PwaInstall() {
               setReady(false);
               setMessage(
                 choice.outcome === "accepted"
-                  ? "בקשת ההתקנה אושרה."
-                  : "ההתקנה בוטלה. אפשר להמשיך לעבוד בדפדפן.",
+                  ? tr("בקשת ההתקנה אושרה.")
+                  : tr("ההתקנה בוטלה. אפשר להמשיך לעבוד בדפדפן."),
               );
             } catch {
-              setMessage("אפשר להתקין דרך תפריט הדפדפן.");
+              setMessage(tr("אפשר להתקין דרך תפריט הדפדפן."));
             }
           }}
         >
-          התקנת תמורה
+          {tr("התקנת תמורה")}
         </Button>
       )}
       {message && <p role="status">{message}</p>}
       <p className="note">
-        במצב פיתוח אין שמירה לא מקוונת. התקנה בדפדפן המובנה או בדפדפנים שאינם
-        תומכים ב־PWA עשויה לא להיות זמינה.
+        {tr(
+          "במצב פיתוח אין שמירה לא מקוונת. התקנה בדפדפן המובנה או בדפדפנים שאינם תומכים ב־PWA עשויה לא להיות זמינה.",
+        )}
       </p>
     </section>
   );

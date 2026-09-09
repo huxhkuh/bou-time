@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React from "react";
 import { Play, ArrowUpLeft, Plus, Timer as TimerIcon } from "lucide-react";
 import Timer from "./Timer.jsx";
@@ -29,7 +30,7 @@ export function Allocation({ state, entries }) {
           <div
             className="stack-bar"
             role="img"
-            aria-label="חלוקת שעות העבודה בין הפרויקטים"
+            aria-label={tr("חלוקת שעות העבודה בין הפרויקטים")}
           >
             {rows.map((p) => (
               <span
@@ -48,15 +49,16 @@ export function Allocation({ state, entries }) {
                 <bdi>{p.name}</bdi>
               </span>
               <bdi>
-                {hours(p.ms)} שע׳{" "}
+                {hours(p.ms)}
+                {tr(" שע׳")}{" "}
                 <small>· {Math.round((p.ms / total) * 100)}%</small>
               </bdi>
             </div>
           ))}
         </div>
       ) : (
-        <Empty title="לכל שעה יש מקום">
-          כאן תראה איך הזמן שלך מתחלק בין הפרויקטים.
+        <Empty title={tr("לכל שעה יש מקום")}>
+          {tr("כאן תראה איך הזמן שלך מתחלק בין הפרויקטים.")}
         </Empty>
       )}
     </>
@@ -107,37 +109,40 @@ export default function Dashboard({
       <Timer {...{ state, now, mutate, notify, newProject, editEntry }} />
       <div className="metrics">
         <div>
-          <span>זמן עבודה היום</span>
+          <span>{tr("זמן עבודה היום")}</span>
           <strong dir="ltr">
             {hours(sum(dayAll))}
-            <small> שעות</small>
+            <small>{tr(" שעות")}</small>
           </strong>
         </div>
         <div>
-          <span>זמן עבודה השבוע</span>
+          <span>{tr("זמן עבודה השבוע")}</span>
           <strong dir="ltr">
             {hours(sum(weekAll))}
-            <small> שעות</small>
+            <small>{tr(" שעות")}</small>
           </strong>
         </div>
         <div className="metric-message">
           <TimerIcon strokeWidth={1.2} size={28} />
           <p>
-            פחות לנחש.
+            {tr("פחות לנחש.")}
+
             <br />
-            <b>יותר לדעת לאן הזמן הולך.</b>
+            <b>{tr("יותר לדעת לאן הזמן הולך.")}</b>
           </p>
         </div>
       </div>
       <div className="dashboard-columns">
         <section className="surface">
           <div className="section-head">
-            <h2>ממשיכים מאיפה שעצרת</h2>
+            <h2>{tr("ממשיכים מאיפה שעצרת")}</h2>
             <button
               className="text-button"
               onClick={() => navigate("projects")}
             >
-              כל הפרויקטים <ArrowUpLeft size={15} />
+              {tr("כל הפרויקטים ")}
+
+              <ArrowUpLeft size={15} />
             </button>
           </div>
           {projects.length ? (
@@ -153,7 +158,7 @@ export default function Dashboard({
                   </div>
                   <button
                     className="start-project"
-                    aria-label={`התחל ${p.name}`}
+                    aria-label={tr("התחל {0}", [p.name])}
                     disabled={state.timer?.projectId === p.id}
                     onClick={() => start(p.id)}
                   >
@@ -164,30 +169,30 @@ export default function Dashboard({
             </div>
           ) : (
             <Empty
-              title="פרויקט ראשון, התחלה חדשה"
+              title={tr("פרויקט ראשון, התחלה חדשה")}
               action={
                 <Button onClick={newProject} icon={Plus}>
-                  יצירת פרויקט
+                  {tr("יצירת פרויקט")}
                 </Button>
               }
             >
-              הוסף לקוח ופרויקט, ותוכל להתחיל למדוד בלחיצה.
+              {tr("הוסף לקוח ופרויקט, ותוכל להתחיל למדוד בלחיצה.")}
             </Empty>
           )}
         </section>
         <section className="surface">
           <div className="section-head">
-            <h2>לאן הלך הזמן?</h2>
-            <span className="muted">השבוע</span>
+            <h2>{tr("לאן הלך הזמן?")}</h2>
+            <span className="muted">{tr("השבוע")}</span>
           </div>
           <Allocation state={state} entries={weekAll} />
         </section>
       </div>
       <section className="surface entries-section">
         <div className="section-head">
-          <h2>מה עשית היום</h2>
+          <h2>{tr("מה עשית היום")}</h2>
           <Button icon={Plus} onClick={manual}>
-            הוספה ידנית
+            {tr("הוספה ידנית")}
           </Button>
         </div>
         <Entries

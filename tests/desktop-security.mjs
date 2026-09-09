@@ -45,11 +45,13 @@ try {
   await expect.poll(() => page.evaluate(() => window.probeViolations.length)).toBeGreaterThanOrEqual(2);
   expect(await page.evaluate(() => window.probeExecuted)).toBe(false);
   expect(await page.evaluate(() => window.bouDesktop.updateAction("https://evil.invalid/update.exe").then(() => false, () => true))).toBe(true);
+  expect(await page.evaluate(() => window.bouDesktop.setLanguage("bad").then(() => false, () => true))).toBe(true);
   await page.evaluate(() => window.bouDesktop.openFloating());
   await expect.poll(() => app.windows().length).toBe(2);
   const floating = app.windows().find((w) => w !== page);
   await floating.waitForLoadState();
   expect(await floating.evaluate(() => window.bouDesktop.updateAction("install").then(() => false, () => true))).toBe(true);
+  expect(await floating.evaluate(() => window.bouDesktop.setLanguage("en").then(() => false, () => true))).toBe(true);
   await floating.evaluate(() => window.bouDesktop.closeFloating());
   // Script-shaped text is still ordinary text when restored from JSON.
   await page.getByRole("button", { name: "גיבוי והגדרות", exact: true }).click();

@@ -19,14 +19,20 @@ from pywinauto.timings import wait_until
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--installer", required=True)
+parser.add_argument("--profile", help="Reuse a workspace release-upgrade test profile")
 parser.add_argument("--install", action="store_true", help="Allow actual per-user installation/update")
 args = parser.parse_args()
 if not args.install:
     parser.error("This test requires explicit --install; it updates the current user's installation.")
 
 root = Path(tempfile.mkdtemp(prefix="bou-installer-e2e-"))
+profile = Path(args.profile).resolve() if args.profile else root / "profile"
+if args.profile:
+    workspace = Path("../../work").resolve()
+    if profile.parent != workspace or not profile.name.startswith("release-upgrade-") or not profile.is_dir():
+        parser.error("--profile must be an existing release-upgrade profile under workspace/work")
 env = os.environ.copy()
-env.update(BOU_DESKTOP_TEST="1", BOU_TEST_PROFILE=str(root / "profile"))
+env.update(BOU_DESKTOP_TEST="1", BOU_TEST_PROFILE=str(profile))
 user_data = Path(os.environ["APPDATA"]) / "BouTime"
 
 

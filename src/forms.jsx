@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React, { useState } from "react";
 import { Button, Field, ProjectOptions } from "./ui.jsx";
 import {
@@ -32,7 +33,7 @@ function useSubmit(mutate, close) {
     },
   };
 }
-function Footer({ error, busy, close, label = "שמירה" }) {
+function Footer({ error, busy, close, label = tr("שמירה") }) {
   return (
     <>
       {error && (
@@ -42,10 +43,10 @@ function Footer({ error, busy, close, label = "שמירה" }) {
       )}
       <footer className="form-footer">
         <Button kind="primary" type="submit" disabled={busy}>
-          {busy ? "שומר…" : label}
+          {busy ? tr("שומר\u2026") : label}
         </Button>
         <Button type="button" onClick={close}>
-          ביטול
+          {tr("ביטול")}
         </Button>
       </footer>
     </>
@@ -53,7 +54,7 @@ function Footer({ error, busy, close, label = "שמירה" }) {
 }
 function checkConcurrent(current, original) {
   if (original && JSON.stringify(current) !== JSON.stringify(original))
-    throw Error("הרשומה עודכנה בלשונית אחרת. יש לסגור ולפתוח אותה מחדש.");
+    throw Error(tr("הרשומה עודכנה בלשונית אחרת. יש לסגור ולפתוח אותה מחדש."));
 }
 export function ClientForm({ item, mutate, close }) {
   const [name, setName] = useState(item?.name || "");
@@ -64,7 +65,7 @@ export function ClientForm({ item, mutate, close }) {
       onSubmit={(e) => {
         e.preventDefault();
         ctl.submit((s) => {
-          if (!name.trim()) throw Error("יש להזין שם לקוח.");
+          if (!name.trim()) throw Error(tr("יש להזין שם לקוח."));
           const old = s.clients.find((c) => c.id === id);
           checkConcurrent(old, item);
           const c = { id, name: name.trim() };
@@ -73,14 +74,14 @@ export function ClientForm({ item, mutate, close }) {
         });
       }}
     >
-      <Field label="שם הלקוח">
+      <Field label={tr("שם הלקוח")}>
         <input
           autoFocus
           required
           maxLength={150}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="למשל, סטודיו קדם"
+          placeholder={tr("למשל, סטודיו קדם")}
         />
       </Field>
       <Footer {...ctl} close={close} />
@@ -109,7 +110,7 @@ export function ProjectForm({ item, state, mutate, close }) {
         e.preventDefault();
         ctl.submit((s) => {
           if (!v.name.trim() || !s.clients.some((c) => c.id === v.clientId))
-            throw Error("יש למלא שם פרויקט ולבחור לקוח.");
+            throw Error(tr("יש למלא שם פרויקט ולבחור לקוח."));
           if (
             v.priceType !== "none" &&
             (!Number.isFinite(Number(v.price)) ||
@@ -117,11 +118,11 @@ export function ProjectForm({ item, state, mutate, close }) {
               v.price === "" ||
               Number(v.price) < 0)
           )
-            throw Error("יש להזין מחיר תקין.");
+            throw Error(tr("יש להזין מחיר תקין."));
           if (v.goal !== null && !(Number(v.goal) > 0))
-            throw Error("יעד השעות צריך להיות חיובי.");
+            throw Error(tr("יעד השעות צריך להיות חיובי."));
           if (v.archived && s.timer?.projectId === v.id)
-            throw Error("יש לעצור ולשמור את הטיימר לפני העברה לארכיון.");
+            throw Error(tr("יש לעצור ולשמור את הטיימר לפני העברה לארכיון."));
           const old = s.projects.find((p) => p.id === v.id);
           checkConcurrent(old, item);
           const p = {
@@ -135,24 +136,24 @@ export function ProjectForm({ item, state, mutate, close }) {
         });
       }}
     >
-      <Field label="שם הפרויקט">
+      <Field label={tr("שם הפרויקט")}>
         <input
           autoFocus
           required
           maxLength={150}
           value={v.name}
           onChange={(e) => set("name", e.target.value)}
-          placeholder="על מה נעבוד?"
+          placeholder={tr("על מה נעבוד?")}
         />
       </Field>
       <div className="form-grid">
-        <Field label="לקוח">
+        <Field label={tr("לקוח")}>
           <select
             required
             value={v.clientId}
             onChange={(e) => set("clientId", e.target.value)}
           >
-            <option value="">בחירת לקוח</option>
+            <option value="">{tr("בחירת לקוח")}</option>
             {state.clients.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -160,7 +161,7 @@ export function ProjectForm({ item, state, mutate, close }) {
             ))}
           </select>
         </Field>
-        <Field label="צבע מזהה">
+        <Field label={tr("צבע מזהה")}>
           <input
             type="color"
             value={v.color}
@@ -168,7 +169,7 @@ export function ProjectForm({ item, state, mutate, close }) {
           />
         </Field>
       </div>
-      <Field label="תיאור קצר (לא חובה)">
+      <Field label={tr("תיאור קצר (לא חובה)")}>
         <textarea
           maxLength={1000}
           value={v.description}
@@ -177,20 +178,22 @@ export function ProjectForm({ item, state, mutate, close }) {
         />
       </Field>
       <div className="form-grid">
-        <Field label="תמחור">
+        <Field label={tr("תמחור")}>
           <select
             value={v.priceType}
             onChange={(e) => set("priceType", e.target.value)}
           >
-            <option value="none">ללא מחיר</option>
-            <option value="hourly">תעריף שעתי</option>
-            <option value="fixed">מחיר כולל לפרויקט</option>
+            <option value="none">{tr("ללא מחיר")}</option>
+            <option value="hourly">{tr("תעריף שעתי")}</option>
+            <option value="fixed">{tr("מחיר כולל לפרויקט")}</option>
           </select>
         </Field>
         {v.priceType !== "none" && (
           <Field
             label={
-              v.priceType === "hourly" ? "תעריף לשעה (₪)" : "מחיר כולל (₪)"
+              v.priceType === "hourly"
+                ? tr("תעריף לשעה (₪)")
+                : tr("מחיר כולל (₪)")
             }
           >
             <input
@@ -206,9 +209,11 @@ export function ProjectForm({ item, state, mutate, close }) {
         )}
       </div>
       <p className="note">
-        תעריף חדש חל על רישומים חדשים בלבד. התעריף של מדידה שכבר התחילה נשמר.
+        {tr(
+          "תעריף חדש חל על רישומים חדשים בלבד. התעריף של מדידה שכבר התחילה נשמר.",
+        )}
       </p>
-      <Field label="יעד שעות (לא חובה)">
+      <Field label={tr("יעד שעות (לא חובה)")}>
         <input
           type="number"
           min="0.01"
@@ -226,7 +231,7 @@ export function ProjectForm({ item, state, mutate, close }) {
           checked={v.archived}
           onChange={(e) => set("archived", e.target.checked)}
         />
-        העברה לארכיון
+        {tr("העברה לארכיון")}
       </label>
       <Footer {...ctl} close={close} />
     </form>
@@ -258,7 +263,7 @@ export function EntryForm({ item, state, mutate, close }) {
         e.preventDefault();
         ctl.submit((s) => {
           const p = s.projects.find((p) => p.id === v.projectId);
-          if (!p) throw Error("יש לבחור פרויקט.");
+          if (!p) throw Error(tr("יש לבחור פרויקט."));
           const old = s.entries.find((e) => e.id === v.id);
           checkConcurrent(old, item);
           const segments =
@@ -274,9 +279,12 @@ export function EntryForm({ item, state, mutate, close }) {
                 ]
               : []),
           ];
+
           if (overlap(all, segments, v.id) && !v.allowOverlap)
             throw Error(
-              "הרישום חופף לזמן שכבר נמדד. בדוק את השעות, או סמן אישור חפיפה מפורש.",
+              tr(
+                "הרישום חופף לזמן שכבר נמדד. בדוק את השעות, או סמן אישור חפיפה מפורש.",
+              ),
             );
           const entry = {
             id: v.id,
@@ -291,30 +299,32 @@ export function EntryForm({ item, state, mutate, close }) {
         });
       }}
     >
-      <Field label="פרויקט">
+      <Field label={tr("פרויקט")}>
         <select
           autoFocus
           required
           value={v.projectId}
           onChange={(e) => set("projectId", e.target.value)}
         >
-          <option value="">בחירת פרויקט</option>
+          <option value="">{tr("בחירת פרויקט")}</option>
           <ProjectOptions state={state} includeArchived />
         </select>
       </Field>
-      <Field label="מה עשית? (לא חובה)">
+      <Field label={tr("מה עשית? (לא חובה)")}>
         <input
           maxLength={1000}
           value={v.description}
           onChange={(e) => set("description", e.target.value)}
-          placeholder="למשל, אפיון ועיצוב מסך הבית"
+          placeholder={tr("למשל, אפיון ועיצוב מסך הבית")}
         />
       </Field>
-      <Field label="אופן הזנת הזמן">
+      <Field label={tr("אופן הזנת הזמן")}>
         <select value={v.mode} onChange={(e) => set("mode", e.target.value)}>
-          {item && <option value="keep">שמירת מקטעי הזמן המקוריים</option>}
-          <option value="clock">שעת התחלה וסיום</option>
-          <option value="duration">שעת התחלה ומשך</option>
+          {item && (
+            <option value="keep">{tr("שמירת מקטעי הזמן המקוריים")}</option>
+          )}
+          <option value="clock">{tr("שעת התחלה וסיום")}</option>
+          <option value="duration">{tr("שעת התחלה ומשך")}</option>
         </select>
       </Field>
       {v.mode === "keep" ? (
@@ -327,12 +337,14 @@ export function EntryForm({ item, state, mutate, close }) {
               </bdi>
             </div>
           ))}
-          השהיות אינן נכללות בזמן העבודה. שינוי לשעות ידניות יחליף את המקטעים.
+          {tr(
+            "השהיות אינן נכללות בזמן העבודה. שינוי לשעות ידניות יחליף את המקטעים.",
+          )}
         </div>
       ) : (
         <>
           <div className="form-grid">
-            <Field label="תאריך התחלה">
+            <Field label={tr("תאריך התחלה")}>
               <input
                 type="date"
                 required
@@ -340,7 +352,7 @@ export function EntryForm({ item, state, mutate, close }) {
                 onChange={(e) => set("date", e.target.value)}
               />
             </Field>
-            <Field label="שעת התחלה">
+            <Field label={tr("שעת התחלה")}>
               <input
                 type="time"
                 step="1"
@@ -352,7 +364,7 @@ export function EntryForm({ item, state, mutate, close }) {
           </div>
           {v.mode === "clock" ? (
             <div className="form-grid">
-              <Field label="תאריך סיום">
+              <Field label={tr("תאריך סיום")}>
                 <input
                   type="date"
                   required
@@ -360,7 +372,7 @@ export function EntryForm({ item, state, mutate, close }) {
                   onChange={(e) => set("endDate", e.target.value)}
                 />
               </Field>
-              <Field label="שעת סיום">
+              <Field label={tr("שעת סיום")}>
                 <input
                   type="time"
                   step="1"
@@ -373,11 +385,11 @@ export function EntryForm({ item, state, mutate, close }) {
                 type="button"
                 onClick={() => set("endDate", addDays(v.date, 1))}
               >
-                סיום ביום הבא
+                {tr("סיום ביום הבא")}
               </Button>
             </div>
           ) : (
-            <Field label="משך בדקות">
+            <Field label={tr("משך בדקות")}>
               <input
                 type="number"
                 min="0.01"
@@ -390,20 +402,24 @@ export function EntryForm({ item, state, mutate, close }) {
             </Field>
           )}
           <p className="note">
-            כל השעות לפי ישראל. בעבודה שחוצה חצות בחר את תאריך הסיום הבא.
+            {tr(
+              "כל השעות לפי ישראל. בעבודה שחוצה חצות בחר את תאריך הסיום הבא.",
+            )}
           </p>
         </>
       )}
       {item && (
         <>
-          <p className="note">התעריף המקורי נשמר גם בהעברה לפרויקט אחר.</p>
+          <p className="note">
+            {tr("התעריף המקורי נשמר גם בהעברה לפרויקט אחר.")}
+          </p>
           <label className="check">
             <input
               type="checkbox"
               checked={v.newPrice}
               onChange={(e) => set("newPrice", e.target.checked)}
             />
-            החל על הרישום את התמחור הנוכחי של הפרויקט הנבחר
+            {tr("החל על הרישום את התמחור הנוכחי של הפרויקט הנבחר")}
           </label>
         </>
       )}
@@ -413,7 +429,7 @@ export function EntryForm({ item, state, mutate, close }) {
           checked={v.allowOverlap}
           onChange={(e) => set("allowOverlap", e.target.checked)}
         />
-        בדקתי ואני מאשר חפיפה לרישומים אחרים
+        {tr("בדקתי ואני מאשר חפיפה לרישומים אחרים")}
       </label>
       <Footer {...ctl} close={close} />
     </form>

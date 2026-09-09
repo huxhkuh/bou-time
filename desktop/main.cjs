@@ -38,6 +38,8 @@ const types = {
   ".webmanifest": "application/manifest+json",
 };
 let mainWindow, floatingWindow;
+let language = "he";
+const copy = (he, en) => language === "en" ? en : he;
 function trusted(event) {
   return (
     [mainWindow, floatingWindow].some(
@@ -142,12 +144,16 @@ else {
     session.defaultSession.setPermissionCheckHandler(() => false);
     session.defaultSession.on("will-download", (_event, item) => {
       item.setSaveDialogOptions({
-        title: "שמירת קובץ מתמורה",
+        title: copy("שמירת קובץ מתמורה", "Save a file from Temura"),
         defaultPath: path.join(
           app.getPath("downloads"),
           path.basename(item.getFilename()),
         ),
       });
+    });
+    ipcMain.handle("bou:set-language", (event, next) => {
+      if (!trusted(event) || event.sender !== mainWindow?.webContents || !["he", "en"].includes(next)) throw new Error("Unauthorized language preference");
+      language = next;
     });
     ipcMain.handle("bou:open-floating", (event) => {
       if (trusted(event)) openFloating();
@@ -201,9 +207,9 @@ else {
       },
       confirmInstall: async () => {
         const { response } = await dialog.showMessageBox(mainWindow, {
-          type: "question", title: "עדכון תמורה", message: "להתקין את העדכון ולהפעיל מחדש?",
-          detail: "חלונות תמורה ייסגרו וייפתחו מחדש אחרי ההתקנה. הנתונים השמורים נשמרים. טיימר פעיל ימשיך למדוד גם בזמן ההתקנה. סיים עריכת טקסט לפני ההמשך.",
-          buttons: ["מאוחר יותר", "התקנה והפעלה מחדש"], defaultId: 0, cancelId: 0, noLink: true,
+          type: "question", title: copy("עדכון תמורה", "Temura update"), message: copy("להתקין את העדכון ולהפעיל מחדש?", "Install the update and restart?"),
+          detail: copy("חלונות תמורה ייסגרו וייפתחו מחדש אחרי ההתקנה. הנתונים השמורים נשמרים. טיימר פעיל ימשיך למדוד גם בזמן ההתקנה. סיים עריכת טקסט לפני ההמשך.", "Temura will close and reopen after installation. Saved data is preserved. A running timer continues during installation. Finish editing text before proceeding."),
+          buttons: [copy("מאוחר יותר", "Later"), copy("התקנה והפעלה מחדש", "Install & restart")], defaultId: 0, cancelId: 0, noLink: true,
         });
         if (response !== 1) return false;
         session.defaultSession.flushStorageData();

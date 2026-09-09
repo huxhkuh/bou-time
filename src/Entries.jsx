@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import React from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Empty, Dot } from "./ui.jsx";
@@ -11,21 +12,22 @@ export default function Entries({
 }) {
   if (!entries.length)
     return (
-      <Empty title="עוד אין כאן שעות עבודה">
-        התחל מדידה או הוסף עבודה ידנית. כל מה שעשית יופיע כאן.
+      <Empty title={tr("עוד אין כאן שעות עבודה")}>
+        {tr("התחל מדידה או הוסף עבודה ידנית. כל מה שעשית יופיע כאן.")}
       </Empty>
     );
+
   return (
     <div className="table-scroll">
       <table className="entries-table">
         <thead>
           <tr>
-            <th>פרויקט / משימה</th>
-            <th>תאריך ושעות</th>
-            <th>משך</th>
-            {showValue && <th>שווי שעתי</th>}
+            <th>{tr("פרויקט / משימה")}</th>
+            <th>{tr("תאריך ושעות")}</th>
+            <th>{tr("משך")}</th>
+            {showValue && <th>{tr("שווי שעתי")}</th>}
             <th>
-              <span className="sr-only">פעולות</span>
+              <span className="sr-only">{tr("פעולות")}</span>
             </th>
           </tr>
         </thead>
@@ -42,7 +44,7 @@ export default function Entries({
                       <bdi>{p?.name}</bdi>
                     </div>
                     <span className="subtext">
-                      <bdi>{e.description || "ללא תיאור"}</bdi>
+                      <bdi>{e.description || tr("ללא תיאור")}</bdi>
                     </span>
                   </td>
                   <td className="entry-date">
@@ -55,32 +57,36 @@ export default function Entries({
                     {dayKey(e.segments[0].start) !==
                       dayKey(e.segments.at(-1).end) && (
                       <small className="subtext">
-                        סיום {dayKey(e.segments.at(-1).end)}
+                        {tr("סיום ")}
+                        {dayKey(e.segments.at(-1).end)}
                       </small>
                     )}
                     {e.segments.length > 1 && (
                       <small className="subtext">
-                        {e.segments.length} מקטעים
+                        {e.segments.length}
+                        {tr(" מקטעים")}
                       </small>
                     )}
                   </td>
-                  <td className="entry-duration" data-label="משך עבודה">
+                  <td className="entry-duration" data-label={tr("משך עבודה")}>
                     <bdi className="duration">{hms(duration(e.segments))}</bdi>
                   </td>
                   {showValue && (
-                    <td className="entry-value" data-label="שווי שעתי">
+                    <td className="entry-value" data-label={tr("שווי שעתי")}>
                       {e.pricing.type === "hourly"
                         ? money(value(e))
                         : e.pricing.type === "fixed"
-                          ? "מחיר כולל"
-                          : "ללא מחיר"}
+                          ? tr("מחיר כולל")
+                          : tr("ללא מחיר")}
                     </td>
                   )}
                   <td className="entry-actions">
                     <div className="row-actions">
                       <button
                         className="icon-button"
-                        aria-label={`עריכת רישום ${e.description || p?.name}`}
+                        aria-label={tr("עריכת רישום {0}", [
+                          e.description || p?.name,
+                        ])}
                         onClick={() =>
                           edit(state.entries.find((x) => x.id === e.id) || e)
                         }
@@ -89,7 +95,9 @@ export default function Entries({
                       </button>
                       <button
                         className="icon-button danger"
-                        aria-label={`מחיקת רישום ${e.description || p?.name}`}
+                        aria-label={tr("מחיקת רישום {0}", [
+                          e.description || p?.name,
+                        ])}
                         onClick={() => remove(e.id)}
                       >
                         <Trash2 size={16} />

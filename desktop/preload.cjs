@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("bouDesktop", {
+  setLanguage: (language) => ipcRenderer.invoke("bou:set-language", language),
   getUpdateStatus: () => ipcRenderer.invoke("bou:update-status"),
   updateAction: (action) => ipcRenderer.invoke("bou:update-action", action),
   onUpdateStatus: (callback) => {

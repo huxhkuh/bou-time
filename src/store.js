@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js";
 import { fresh } from "./domain.js";
 export const demo =
   typeof location !== "undefined" &&
@@ -55,7 +56,7 @@ export async function change(fn) {
       reject(
         failure ||
           tx.error ||
-          Error("השמירה נכשלה. יש לבדוק מקום פנוי והרשאות דפדפן."),
+          Error(tr("השמירה נכשלה. יש לבדוק מקום פנוי והרשאות דפדפן.")),
       );
     tx.onerror = () => {};
   });

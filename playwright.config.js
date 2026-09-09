@@ -3,7 +3,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 45000,
   use: {
-    baseURL: "http://127.0.0.1:5173",
+    baseURL: "http://127.0.0.1:5184",
     browserName: "chromium",
     channel: "chrome",
     headless: true,
@@ -14,9 +14,10 @@ export default defineConfig({
   outputDir: "../../work/playwright-results",
   reporter: [["list"]],
   webServer: {
-    command: "npm run dev",
-    url: "http://127.0.0.1:5173",
-    reuseExistingServer: true,
+    command: "node server.mjs",
+    env: { PORT: "5184" },
+    url: "http://127.0.0.1:5184",
+    reuseExistingServer: false,
     timeout: 60000,
   },
 });

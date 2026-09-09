@@ -1,4 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import {
+  getPreferences,
+  subscribePreferences,
+  applyPreferences,
+} from "./preferences.js";
+import { tr, locale } from "./i18n.js";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useSyncExternalStore,
+} from "react";
 import {
   Clock3,
   Folder,
@@ -19,14 +30,21 @@ import Projects, { Clients } from "./Projects.jsx";
 import Reports from "./Reports.jsx";
 import Settings from "./Settings.jsx";
 import FocusTools, { ClockScreen } from "./FocusTools.jsx";
-const NAV = [
-  ["today", "היום", Clock3],
-  ["projects", "פרויקטים", Folder],
-  ["clients", "לקוחות", Users],
-  ["reports", "דוחות", ChartNoAxesCombined],
-  ["settings", "גיבוי והגדרות", Database],
+const getNav = () => [
+  ["today", tr("היום"), Clock3],
+  ["projects", tr("פרויקטים"), Folder],
+  ["clients", tr("לקוחות"), Users],
+  ["reports", tr("דוחות"), ChartNoAxesCombined],
+  ["settings", tr("גיבוי והגדרות"), Database],
 ];
+
 export default function App() {
+  const prefs = useSyncExternalStore(subscribePreferences, getPreferences);
+  const NAV = getNav();
+  useEffect(() => {
+    applyPreferences();
+    window.bouDesktop?.setLanguage?.(prefs.language).catch(() => {});
+  }, [prefs]);
   const [state, setState] = useState(null),
     [loadError, setLoadError] = useState(""),
     [page, setPage] = useState("today"),
@@ -69,9 +87,9 @@ export default function App() {
   }, [toast]);
   useEffect(() => {
     document.title = state?.timer
-      ? `${hms(elapsed(state.timer, now))} · תמורה`
-      : "תמורה · מעקב זמן עבודה";
-  }, [state?.timer, now]);
+      ? tr("{0} · תמורה", [hms(elapsed(state.timer, now))])
+      : tr("תמורה · מעקב זמן עבודה");
+  }, [state?.timer, now, prefs.language]);
   const mutate = useCallback(async (fn) => {
     const s = await change(fn);
     setState((current) =>
@@ -94,7 +112,7 @@ export default function App() {
   const newProject = () => {
     if (!state.clients.length) {
       setModal({ type: "client", next: "project" });
-      notify("נתחיל בהוספת לקוח, ואז ניצור את הפרויקט.");
+      notify(tr("נתחיל בהוספת לקוח, ואז ניצור את הפרויקט."));
     } else setModal({ type: "project" });
   };
   const manual = () => {
@@ -131,8 +149,8 @@ export default function App() {
       setPage("today");
       notify(
         state.timer
-          ? "הזמן הקודם נשמר. המדידה החדשה התחילה."
-          : "המדידה התחילה.",
+          ? tr("הזמן הקודם נשמר. המדידה החדשה התחילה.")
+          : tr("המדידה התחילה."),
       );
     } catch (e) {
       notify(e.message, true);
@@ -143,13 +161,21 @@ export default function App() {
   if (loadError)
     return (
       <main className="fatal">
-        <h1>לא הצלחנו לפתוח את הנתונים</h1>
+        <h1>{tr("לא הצלחנו לפתוח את הנתונים")}</h1>
         <p>{loadError}</p>
-        <p>יש לאפשר שמירת נתונים בדפדפן ולנסות שוב. לא נעשו שינויים בנתונים.</p>
-        <Button onClick={() => location.reload()}>ניסיון נוסף</Button>
+        <p>
+          {tr(
+            "יש לאפשר שמירת נתונים בדפדפן ולנסות שוב. לא נעשו שינויים בנתונים.",
+          )}
+        </p>
+        <Button onClick={() => location.reload()}>{tr("ניסיון נוסף")}</Button>
       </main>
     );
-  if (!state) return <main className="fatal">פותחים את סביבת העבודה שלך…</main>;
+
+  if (!state)
+    return (
+      <main className="fatal">{tr("פותחים את סביבת העבודה שלך\u2026")}</main>
+    );
   if (
     window.bouDesktop &&
     new URLSearchParams(location.search).get("floating") === "1"
@@ -164,12 +190,13 @@ export default function App() {
         />
       </div>
     );
+
   const titles = {
-    today: "היום שלך, בקצב שלך.",
-    projects: "לכל פרויקט יש זמן.",
-    clients: "הלקוחות שלך.",
-    reports: "רואים את התמונה המלאה.",
-    settings: "הכול נשאר בידיים שלך.",
+    today: tr("היום שלך, בקצב שלך."),
+    projects: tr("לכל פרויקט יש זמן."),
+    clients: tr("הלקוחות שלך."),
+    reports: tr("רואים את התמונה המלאה."),
+    settings: tr("הכול נשאר בידיים שלך."),
   };
   const common = {
     state,
@@ -185,14 +212,15 @@ export default function App() {
   return (
     <div className="app-shell">
       <a href="#main" className="skip-link">
-        דילוג לתוכן הראשי
+        {tr("דילוג לתוכן הראשי")}
       </a>
       <aside className="sidebar">
         <div className="brand">
-          תמורה<span>.</span>
-          <small>מעקב זמן עבודה</small>
+          {tr("תמורה")}
+          <span>.</span>
+          <small>{tr("מעקב זמן עבודה")}</small>
         </div>
-        <nav aria-label="ניווט ראשי">
+        <nav aria-label={tr("ניווט ראשי")}>
           {NAV.map(([key, label, Icon]) => (
             <button
               key={key}
@@ -207,26 +235,28 @@ export default function App() {
         </nav>
         <div className="sidebar-footer">
           <span className="local-dot" />
-          סביבת העבודה האישית שלך<small>נשמר מקומית · בלי הסחות דעת</small>
+          {tr("סביבת העבודה האישית שלך")}
+          <small>{tr("נשמר מקומית · בלי הסחות דעת")}</small>
         </div>
       </aside>
       <main id="main" className="main">
         {demo && (
           <p className="error">
-            מצב הדגמה נפרד · הנתונים כאן אינם הנתונים האישיים שלך.{" "}
-            <a href="/">חזרה לאפליקציה האישית</a>
+            {tr("מצב הדגמה נפרד · הנתונים כאן אינם הנתונים האישיים שלך.")}{" "}
+            <a href="/">{tr("חזרה לאפליקציה האישית")}</a>
           </p>
         )}
         <header className="page-header">
           <div>
             <span className="page-eyebrow">
-              מרחב העבודה שלך <span aria-hidden="true">/</span>{" "}
+              {tr("מרחב העבודה שלך ")}
+              <span aria-hidden="true">/</span>{" "}
               {NAV.find(([key]) => key === page)?.[1]}
             </span>
             <h1>{titles[page]}</h1>
             <p>
               {page === "today"
-                ? new Intl.DateTimeFormat("he-IL", {
+                ? new Intl.DateTimeFormat(locale(), {
                     timeZone: "Asia/Jerusalem",
                     weekday: "long",
                     day: "numeric",
@@ -234,19 +264,19 @@ export default function App() {
                     year: "numeric",
                   }).format(now)
                 : page === "projects"
-                  ? "מהרעיון הראשון ועד השעה האחרונה."
+                  ? tr("מהרעיון הראשון ועד השעה האחרונה.")
                   : page === "reports"
-                    ? "זמן, עבודה ותמורה — במקום אחד."
+                    ? tr("זמן, עבודה ותמורה \u2014 במקום אחד.")
                     : page === "clients"
-                      ? "כל שיתוף פעולה מתחיל כאן."
-                      : "שמירה מקומית, גיבוי והרגלים טובים."}
+                      ? tr("כל שיתוף פעולה מתחיל כאן.")
+                      : tr("שמירה מקומית, גיבוי והרגלים טובים.")}
             </p>
           </div>
           <div className="page-actions">
             <FocusTools {...{ state, mutate, notify, editEntry }} />
             {page === "today" && (
               <Button icon={Plus} onClick={manual}>
-                הוספה ידנית
+                {tr("הוספה ידנית")}
               </Button>
             )}
           </div>
@@ -259,7 +289,7 @@ export default function App() {
             </bdi>
             <bdi>{hms(elapsed(state.timer, now))}</bdi>
             <span>
-              {state.timer.runningSince === null ? "מושהה" : "במדידה"}
+              {state.timer.runningSince === null ? tr("מושהה") : tr("במדידה")}
             </span>
             <ArrowUpLeft size={18} />
           </button>
@@ -281,8 +311,8 @@ export default function App() {
         {page === "reports" && <Reports {...common} />}
         {page === "settings" && <Settings {...common} />}
         <footer className="main-footer">
-          <span>הזמן שלך. העבודה שלך. התמורה שלך.</span>
-          <span>שעון ישראל · שבוע מתחיל ביום ראשון</span>
+          <span>{tr("הזמן שלך. העבודה שלך. התמורה שלך.")}</span>
+          <span>{tr("שעון ישראל · שבוע מתחיל ביום ראשון")}</span>
         </footer>
       </main>
       {modal && (
@@ -290,17 +320,17 @@ export default function App() {
           title={
             modal.type === "client"
               ? modal.item
-                ? "עריכת לקוח"
-                : "לקוח חדש"
+                ? tr("עריכת לקוח")
+                : tr("לקוח חדש")
               : modal.type === "project"
                 ? modal.item
-                  ? "עריכת פרויקט"
-                  : "פרויקט חדש"
+                  ? tr("עריכת פרויקט")
+                  : tr("פרויקט חדש")
                 : modal.type === "entry"
                   ? modal.item
-                    ? "עריכת רישום"
-                    : "הוספת עבודה ידנית"
-                  : "למחוק את הרישום?"
+                    ? tr("עריכת רישום")
+                    : tr("הוספת עבודה ידנית")
+                  : tr("למחוק את הרישום?")
           }
           close={() => setModal(null)}
         >
@@ -332,7 +362,9 @@ export default function App() {
           {modal.type === "delete" && (
             <>
               <p>
-                רישום הזמן יימחק מהפרויקט ומהדוחות. הפעולה אינה ניתנת לביטול.
+                {tr(
+                  "רישום הזמן יימחק מהפרויקט ומהדוחות. הפעולה אינה ניתנת לביטול.",
+                )}
               </p>
               <div className="form-footer">
                 <Button
@@ -343,15 +375,15 @@ export default function App() {
                         s.entries = s.entries.filter((e) => e.id !== modal.id);
                       });
                       setModal(null);
-                      notify("הרישום נמחק.");
+                      notify(tr("הרישום נמחק."));
                     } catch (e) {
                       notify(e.message, true);
                     }
                   }}
                 >
-                  כן, מחיקת הרישום
+                  {tr("כן, מחיקת הרישום")}
                 </Button>
-                <Button onClick={() => setModal(null)}>ביטול</Button>
+                <Button onClick={() => setModal(null)}>{tr("ביטול")}</Button>
               </div>
             </>
           )}
@@ -364,7 +396,7 @@ export default function App() {
         >
           {toast.error ? <X size={18} /> : <Check size={18} />}
           <span>{toast.text}</span>
-          <button aria-label="סגירת הודעה" onClick={() => setToast(null)}>
+          <button aria-label={tr("סגירת הודעה")} onClick={() => setToast(null)}>
             <X size={16} />
           </button>
         </div>

@@ -1,6 +1,6 @@
 {
   "name": "bou-time",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -41,7 +41,14 @@
       "onlyLoadAppFromAsar": true,
       "grantFileProtocolExtraPrivileges": false
     },
-    "publish": [{ "provider": "github", "owner": "huxhkuh", "repo": "tmora", "releaseType": "release" }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "huxhkuh",
+        "repo": "tmora",
+        "releaseType": "release"
+      }
+    ],
     "appId": "il.bou.time",
     "productName": "תמורה",
     "directories": {

@@ -56,7 +56,7 @@
   margin-top: 4px;
 }
 .main {
-  margin-right: 226px;
+  margin-inline-start: 226px;
   padding: 37px 42px 24px;
   max-width: 1700px;
 }
@@ -168,8 +168,8 @@
   border-color: #e1a582;
 }
 .timer-controls {
-  padding-right: 32px;
-  border-right: 1px solid #4a5042;
+  padding-inline-start: 32px;
+  border-inline-start: 1px solid #4a5042;
   min-width: 315px;
 }
 .clock {
@@ -219,7 +219,7 @@
   letter-spacing: -1.2px;
 }
 .metrics strong small {
-  margin-right: 6px;
+  margin-inline-start: 6px;
   letter-spacing: 0;
   font-size: 13px;
 }
@@ -463,12 +463,12 @@ dialog:not(.focus-dialog) .dialog-body {
 @media (max-width: 1250px) {
   .main {
     padding: 30px;
-    margin-right: 200px;
+    margin-inline-start: 200px;
   }
   .sidebar {
     width: 200px;
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-inline-start: 15px;
+    padding-inline-end: 15px;
   }
   .page-header {
     flex-wrap: wrap;
@@ -480,7 +480,7 @@ dialog:not(.focus-dialog) .dialog-body {
   }
   .timer-controls {
     min-width: 260px;
-    padding-right: 24px;
+    padding-inline-start: 24px;
   }
   .timer h2 {
     font-size: 24px;
@@ -615,7 +615,7 @@ dialog:not(.focus-dialog) .dialog-body {
   }
   .timer-controls {
     min-width: 0;
-    border-right: 0;
+    border-inline-start: 0;
     padding: 23px 0 0;
   }
   .clock {
@@ -706,7 +706,7 @@ dialog:not(.focus-dialog) .dialog-body {
   .entries-table .entry-duration {
     grid-column: 2;
     grid-row: 2;
-    text-align: left;
+    text-align: end;
     align-self: end;
   }
   .entries-table .entry-value {

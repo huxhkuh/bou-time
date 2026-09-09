@@ -1,3 +1,4 @@
+import { tr, locale } from "./i18n.js";
 import { validateTasks } from "./tasks.js";
 import { checkBackupTree } from "./backup-safety.js";
 export const TZ = "Asia/Jerusalem";
@@ -47,10 +48,10 @@ export function weekKey(day) {
 // Explicit Israel wall-clock conversion; reject missing / ambiguous DST times.
 export function wallTime(day, time) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !/^\d{2}:\d{2}(:\d{2})?$/.test(time))
-    throw Error("יש להזין תאריך ושעה תקינים.");
+    throw Error(tr("יש להזין תאריך ושעה תקינים."));
   const normalized = time.length === 5 ? time + ":00" : time;
   if (day < "1970-01-01" || day > "2100-12-31")
-    throw Error("יש לבחור תאריך בין 1970 ל־2100.");
+    throw Error(tr("יש לבחור תאריך בין 1970 ל־2100."));
   const naive = Date.parse(`${day}T${normalized}Z`);
   const matches = [2, 3]
     .map((h) => naive - h * HOUR)
@@ -61,8 +62,10 @@ export function wallTime(day, time) {
   if (matches.length !== 1)
     throw Error(
       matches.length
-        ? "השעה מופיעה פעמיים במעבר לשעון חורף. יש לבחור שעה מחוץ לשעת המעבר."
-        : "התאריך או השעה אינם קיימים בשעון ישראל.",
+        ? tr(
+            "השעה מופיעה פעמיים במעבר לשעון חורף. יש לבחור שעה מחוץ לשעת המעבר.",
+          )
+        : tr("התאריך או השעה אינם קיימים בשעון ישראל."),
     );
   return matches[0];
 }
@@ -85,9 +88,9 @@ export function hms(ms) {
     .join(":");
 }
 export const hours = (ms) =>
-  (ms / HOUR).toLocaleString("he-IL", { maximumFractionDigits: 2 });
+  (ms / HOUR).toLocaleString(locale(), { maximumFractionDigits: 2 });
 export const money = (n) =>
-  n.toLocaleString("he-IL", {
+  n.toLocaleString(locale(), {
     style: "currency",
     currency: "ILS",
     maximumFractionDigits: 2,
@@ -124,7 +127,7 @@ export function timerAction(s, action, now = Date.now()) {
     if ((t?.id ?? null) !== (action.expected ?? null)) return;
     if (t?.projectId === action.projectId) return;
     const p = s.projects.find((p) => p.id === action.projectId && !p.archived);
-    if (!p) throw Error("יש לבחור פרויקט פעיל.");
+    if (!p) throw Error(tr("יש לבחור פרויקט פעיל."));
     stopTimer(s, now);
     s.timer = {
       id: action.id || uid(),
@@ -193,10 +196,12 @@ export function manualSegments({ date, start, end, endDate, minutes, mode }) {
       : wallTime(endDate || date, end);
   if (!Number.isFinite(b) || b <= a)
     throw Error(
-      "שעת הסיום חייבת להיות אחרי ההתחלה. בעבודה שחוצה חצות, בחר את יום הסיום הבא.",
+      tr(
+        "שעת הסיום חייבת להיות אחרי ההתחלה. בעבודה שחוצה חצות, בחר את יום הסיום הבא.",
+      ),
     );
   if (b - a > 366 * 24 * HOUR)
-    throw Error("משך הרישום גדול משנה. יש לבדוק את התאריכים.");
+    throw Error(tr("משך הרישום גדול משנה. יש לבדוק את התאריכים."));
   return [{ start: a, end: b }];
 }
 const isStr = (x) => typeof x === "string" && x.length <= 10000;
@@ -216,12 +221,15 @@ export function validateBackup(input) {
       (k) => Array.isArray(s[k]) && s[k].length < 100000,
     )
   )
-    throw Error("קובץ הגיבוי אינו בפורמט נתמך.");
+    throw Error(tr("קובץ הגיבוי אינו בפורמט נתמך."));
   for (const k of ["clients", "projects", "entries"])
-    if (s[k].some((x) => !x || typeof x !== "object" || Array.isArray(x)) || new Set(s[k].map((x) => x.id)).size !== s[k].length)
-      throw Error("הגיבוי מכיל מזהים כפולים.");
+    if (
+      s[k].some((x) => !x || typeof x !== "object" || Array.isArray(x)) ||
+      new Set(s[k].map((x) => x.id)).size !== s[k].length
+    )
+      throw Error(tr("הגיבוי מכיל מזהים כפולים."));
   if (!s.clients.every((c) => validId(c.id) && isStr(c.name) && c.name.trim()))
-    throw Error("פרטי הלקוחות בגיבוי אינם תקינים.");
+    throw Error(tr("פרטי הלקוחות בגיבוי אינם תקינים."));
   const clients = new Set(s.clients.map((c) => c.id));
   const projects = new Set(s.projects.map((p) => p.id));
   if (
@@ -238,14 +246,15 @@ export function validateBackup(input) {
         (p.goal === null || (finite(p.goal) && p.goal > 0)),
     )
   )
-    throw Error("פרטי הפרויקטים בגיבוי אינם תקינים.");
+    throw Error(tr("פרטי הפרויקטים בגיבוי אינם תקינים."));
   s.tasks = validateTasks(s.tasks, s.projects);
   const validSegments = (ss) =>
     Array.isArray(ss) &&
     ss.length < 100000 &&
     ss.every(
       (a, i) =>
-        a && finite(a.start) &&
+        a &&
+        finite(a.start) &&
         finite(a.end) &&
         a.start >= 0 &&
         a.end > a.start &&
@@ -254,14 +263,17 @@ export function validateBackup(input) {
         (i === 0 || a.start >= ss[i - 1].end),
     );
   const common = (e) =>
-    e && validId(e.id) &&
+    e &&
+    validId(e.id) &&
     projects.has(e.projectId) &&
     isStr(e.description) &&
     validPrice(e.pricing) &&
-    finite(e.createdAt) && e.createdAt >= 0 && e.createdAt < 4102444800000 &&
+    finite(e.createdAt) &&
+    e.createdAt >= 0 &&
+    e.createdAt < 4102444800000 &&
     validSegments(e.segments);
   if (!s.entries.every((e) => common(e) && e.segments.length))
-    throw Error("רישומי הזמן בגיבוי אינם תקינים.");
+    throw Error(tr("רישומי הזמן בגיבוי אינם תקינים."));
   if (
     s.timer !== null &&
     (!common(s.timer) ||
@@ -274,7 +286,7 @@ export function validateBackup(input) {
       ) ||
       s.entries.some((e) => e.id === s.timer.id))
   )
-    throw Error("הטיימר בגיבוי אינו תקין.");
+    throw Error(tr("הטיימר בגיבוי אינו תקין."));
   return s;
 }
 export function mergeBackup(s, input) {
@@ -284,10 +296,7 @@ export function mergeBackup(s, input) {
   for (const k of ["clients", "projects", "entries", "tasks"]) {
     const existing = new Set(s[k].map((x) => x.id));
     for (const x of backup[k])
-      if (
-        !existing.has(x.id) &&
-        !(k === "entries" && s.timer?.id === x.id)
-      )
+      if (!existing.has(x.id) && !(k === "entries" && s.timer?.id === x.id))
         s[k].push(x);
   }
   if (
@@ -307,18 +316,19 @@ export function csv(entries, s) {
     '"';
   const rows = [
     [
-      "תאריך",
-      "לקוח",
-      "פרויקט",
-      "תיאור",
-      "התחלה — שעון ישראל",
-      "סיום — שעון ישראל",
-      "שעות מדויקות",
-      "סוג תמחור",
-      "תעריף שעתי שנשמר",
-      "שווי שעתי — ₪",
+      tr("תאריך"),
+      tr("לקוח"),
+      tr("פרויקט"),
+      tr("תיאור"),
+      tr("התחלה \u2014 שעון ישראל"),
+      tr("סיום \u2014 שעון ישראל"),
+      tr("שעות מדויקות"),
+      tr("סוג תמחור"),
+      tr("תעריף שעתי שנשמר"),
+      tr("שווי שעתי \u2014 ₪"),
     ],
   ];
+
   for (const e of daily(entries)) {
     const p = s.projects.find((p) => p.id === e.projectId),
       c = s.clients.find((c) => c.id === p?.clientId);
@@ -330,7 +340,9 @@ export function csv(entries, s) {
       clockKey(e.segments[0].start),
       clockKey(e.segments[0].end),
       duration(e.segments) / HOUR,
-      { none: "ללא מחיר", hourly: "שעתי", fixed: "מחיר כולל" }[e.pricing.type],
+      { none: tr("ללא מחיר"), hourly: tr("שעתי"), fixed: tr("מחיר כולל") }[
+        e.pricing.type
+      ],
       e.pricing.type === "hourly" ? e.pricing.amount : "",
       e.pricing.type === "hourly" ? value(e) : "",
     ]);
