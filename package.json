@@ -13,7 +13,9 @@
     "desktop": "electron .",
     "build:windows": "npm run build && electron-builder --win nsis portable --x64 --publish never",
     "test:desktop": "node tests/desktop-smoke.mjs",
-    "test:desktop:compact": "node tests/desktop-compact.mjs"
+    "test:desktop:compact": "node tests/desktop-compact.mjs",
+    "build:site": "node scripts/build-download-site.mjs",
+    "test:site": "node tests/download-site.mjs"
   },
   "dependencies": {
     "@fontsource-variable/heebo": "^5.3.0",

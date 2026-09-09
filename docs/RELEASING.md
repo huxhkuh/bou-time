@@ -58,6 +58,14 @@ For an explicitly authorized current-user upgrade, close the installed app and r
 
 Then run `python tests/installer-e2e.py --installer ../windows/Temura-Install.exe --install --profile <profile from descriptor>` and `verify` again. This performs another real installation, cancellation/retry and startup with the same isolated profile. Run the new production feed check and verify the published Pages download links. Do not publish any test profiles or QA installers.
 
+## Download website
+
+For each new public version, run `npm run build:site` after updating the package
+version, then `npm run test:site`. This regenerates **both** `docs/index.html` and
+`docs/en.html` with matching versioned download links. Verify the published Pages
+site after deployment. Website-only edits do not require a new Windows release;
+see [DOWNLOAD-SITE.md](DOWNLOAD-SITE.md) for recordings, fonts and browser checks.
+
 ## Range-response guard (1.5.1)
 
 `desktop/range-download.cjs` adapts the pinned electron-updater 6.8.9 HTTP executor: partial requests require HTTP 206 with matching single-range headers before any bytes are passed to the differential writer. Rejection uses the library’s existing full-download fallback and SHA-512 verification. Keep the real local-server ignore-Range test when updating electron-updater, since this adapter depends on its executor interface. Previously shipped apps do not contain this fix; the bootstrapper provides the migration fallback.
