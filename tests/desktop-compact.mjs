@@ -155,6 +155,16 @@ try {
   await child.screenshot({ path: "../windows-tiny-english.png" });
   await page.getByLabel("Interface language", { exact: true }).selectOption("he");
   await expect(child.locator("html")).toHaveAttribute("dir", "rtl");
+  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()
+    .find(w => !w.webContents.getURL().includes("floating=1")).minimize());
+  await expect.poll(() => app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()
+    .find(w => !w.webContents.getURL().includes("floating=1")).isMinimized())).toBe(true);
+  const clockBefore = await child.locator('.focus-digits').textContent();
+  await expect(child.locator('.focus-digits')).not.toHaveText(clockBefore, { timeout: 4000 });
+  await app.evaluate(({ BrowserWindow }) => {
+    const main = BrowserWindow.getAllWindows().find(w => !w.webContents.getURL().includes("floating=1"));
+    main.restore(); main.show();
+  });
   await child.getByRole("button", { name: "עצירה ושמירה", exact: true }).click();
   await child.getByRole("button", { name: "סגירת הצג הצף", exact: true }).click();
   console.log(
@@ -171,6 +181,7 @@ try {
         "no overflow",
         "close and restart persistence",
         "English tiny layout and live language/theme/mode sync in both directions",
+        "native main minimizes while floating time continues, then restores",
       ],
     }),
   );

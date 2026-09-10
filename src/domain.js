@@ -13,18 +13,20 @@ export const fresh = () => ({
   revision: 0,
 });
 export const uid = () => crypto.randomUUID();
+// A formatter owns native ICU resources. Reuse one for our fixed Israel zone.
+const israelParts = new Intl.DateTimeFormat("en-CA", {
+  timeZone: TZ,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hourCycle: "h23",
+});
 export function parts(ts) {
   return Object.fromEntries(
-    new Intl.DateTimeFormat("en-CA", {
-      timeZone: TZ,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hourCycle: "h23",
-    })
+    israelParts
       .formatToParts(ts)
       .map((p) => [p.type, p.value]),
   );

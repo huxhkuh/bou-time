@@ -1,5 +1,5 @@
 import { tr } from "./i18n.js";
-import React from "react";
+import React, { useMemo } from "react";
 import { Play, ArrowUpLeft, Plus, Timer as TimerIcon } from "lucide-react";
 import Timer from "./Timer.jsx";
 import Entries from "./Entries.jsx";
@@ -81,29 +81,20 @@ export default function Dashboard({
     live = state.timer
       ? { ...state.timer, segments: timerSegments(state.timer, now) }
       : null;
-  const all = [...state.entries, ...(live?.segments.length ? [live] : [])];
-  const dayEntries = sliceEntries(state.entries, today, today),
-    dayAll = sliceEntries(all, today, today),
-    weekAll = sliceEntries(all, week, today);
+  // Saved history changes only on a write or date boundary, not every clock tick.
+  const dayEntries = useMemo(() => sliceEntries(state.entries, today, today), [state.entries, today]);
+  const weekEntries = useMemo(() => sliceEntries(state.entries, week, today), [state.entries, week, today]);
+  const current = live?.segments.length ? [live] : [];
+  const dayAll = [...dayEntries, ...sliceEntries(current, today, today)],
+    weekAll = [...weekEntries, ...sliceEntries(current, week, today)];
   const sum = (es) => es.reduce((n, e) => n + duration(e.segments), 0);
-  const projects = [...state.projects]
-    .filter((p) => !p.archived)
-    .sort(
-      (a, b) =>
-        Math.max(
-          0,
-          ...state.entries
-            .filter((e) => e.projectId === b.id)
-            .map((e) => e.segments.at(-1).end),
-        ) -
-        Math.max(
-          0,
-          ...state.entries
-            .filter((e) => e.projectId === a.id)
-            .map((e) => e.segments.at(-1).end),
-        ),
-    )
-    .slice(0, 4);
+  const projects = useMemo(() => {
+    const latest = new Map();
+    for (const entry of state.entries) latest.set(entry.projectId,
+      Math.max(latest.get(entry.projectId) || 0, entry.segments.at(-1)?.end || 0));
+    return state.projects.filter(p => !p.archived)
+      .sort((a, b) => (latest.get(b.id) || 0) - (latest.get(a.id) || 0)).slice(0, 4);
+  }, [state.projects, state.entries]);
   return (
     <>
       <Timer {...{ state, now, mutate, notify, newProject, editEntry }} />

@@ -1,5 +1,6 @@
 import { getPreferences, subscribePreferences, setPreference } from "./preferences.js";
 import { tr } from "./i18n.js";
+import { useDisplayNow } from "./useDisplayNow.js";
 import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   Minimize2,
@@ -29,8 +30,8 @@ export default function CompactClock({
   });
   const prefs = useSyncExternalStore(subscribePreferences, getPreferences);
   const light = prefs.mode === "light";
-  const [now, setNow] = useState(Date.now()),
-    [error, setError] = useState(""),
+  const now = useDisplayNow(state.timer?.runningSince != null, owner);
+  const [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
   const inFlight = useRef(false);
   const timer = state.timer;
@@ -38,10 +39,6 @@ export default function CompactClock({
     (p) => !p.archived || p.id === timer?.projectId,
   );
   const long = timer && now - timer.createdAt > 12 * HOUR;
-  useEffect(() => {
-    const id = owner.setInterval(() => setNow(Date.now()), 250);
-    return () => owner.clearInterval(id);
-  }, [owner]);
   useEffect(() => {
     try {
       localStorage.setItem("bou-float-tiny", String(tiny));

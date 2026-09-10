@@ -171,7 +171,10 @@ try {
   app = null;
   console.log("Explicit in-app installation launched; waiting for upgraded QA application");
   await expect.poll(async () => {
-    const { extractFile } = await import("@electron/asar");
+    const { extractFile, uncacheAll } = await import("@electron/asar");
+    // The installer replaces this archive in place. Its header/offsets may be
+    // completely different after pruning dependencies; never reuse old metadata.
+    uncacheAll();
     try { return JSON.parse(extractFile(path.join(installDir, "resources/app.asar"), "package.json").toString()).version; } catch { return null; }
   }, { timeout: 120000 }).toBe("9.0.1");
   // Wait for the updater's automatic relaunch, then politely close this QA EXE

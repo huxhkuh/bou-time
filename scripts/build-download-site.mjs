@@ -1,5 +1,17 @@
 import fs from 'node:fs/promises';
 const version=JSON.parse(await fs.readFile('package.json','utf8')).version;
+// Record exact artifact sizes when built locally; clean checkouts use the saved
+// public metadata. Never advertise a guessed size for a new version.
+let downloads;
+try {
+ const setup=await fs.stat(`../windows/Bou-Time-${version}-x64-Setup.exe`);
+ const portable=await fs.stat(`../windows/Bou-Time-${version}-x64-Portable.exe`);
+ downloads={version,setup:setup.size,portable:portable.size};
+ await fs.writeFile('docs/downloads.json',JSON.stringify(downloads,null,2)+'\n');
+} catch {
+ downloads=JSON.parse(await fs.readFile('docs/downloads.json','utf8'));
+ if(downloads.version!==version)throw Error('Build the Windows artifacts before generating a new release download page.');
+}
 const repo='https://github.com/huxhkuh/tmora';
 const download=repo+'/releases/latest/download/Temura-Install.exe';
 const icons={download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',arrow:'<path d="M12 4v16m-6-6 6 6 6-6"/>',play:'<path d="m9 5 11 7-11 7z"/>',check:'<path d="m5 12 4 4L19 6"/>',github:'<path d="M9 19c-5 1-5-3-7-3m14 6v-4a3 3 0 0 0-1-2c3 0 6-2 6-6a5 5 0 0 0-1-4 5 5 0 0 0 0-4s-1-1-4 1a13 13 0 0 0-7 0C6 1 5 2 5 2a5 5 0 0 0 0 4 5 5 0 0 0-1 4c0 4 3 6 6 6a3 3 0 0 0-1 2v4"/>'};
@@ -35,7 +47,7 @@ for(const [lang,c] of Object.entries(copy)){
 <section class="value-section" id="details"><div class="wrap value-layout"><div><p class="eyebrow">${c.valueTag}</p><h2>${c.valueTitle}</h2><p class="value-body">${c.valueBody}</p><p class="value-note">${c.valueNote}</p></div><div class="value-example"><p class="example-label">${c.exampleLabel}</p><div class="example-inputs"><div><span>${c.exampleNames[0]}</span><strong dir="ltr">₪3,600</strong></div><span class="divide" aria-hidden="true">÷</span><div><span>${c.exampleNames[1]}</span><strong>12</strong></div></div><div class="example-result"><span>${c.exampleNames[2]}</span><strong dir="ltr">₪300<span>/h</span></strong></div></div></div></section>
 <section class="more-features wrap">${c.features.map(([title,body],i)=>`<article><span class="feature-number">0${i+1}</span><h3>${title}</h3><p>${body}</p></article>`).join('')}</section>
 <section class="installation wrap section" id="install"><div class="install-copy"><p class="eyebrow">${c.installTag}</p><h2>${c.installTitle}</h2><ol>${c.steps.map(([title,body],i)=>`<li><span class="step-number">${i+1}</span><div><h3>${title}</h3><p>${body}</p></div></li>`).join('')}</ol></div><figure class="installer"><img src="assets/installer.png" width="1170" height="780" alt="${c.installerAlt}" loading="lazy"><figcaption>${c.installerCaption}</figcaption></figure></section>
-<section class="download-section wrap" id="download"><div class="download-banner"><div><p class="eyebrow">${c.release} <bdi>${version}</bdi></p><h2>${c.downloadTitle}</h2><p>${c.downloadBody}</p></div><div class="download-action"><a class="button light-button" href="${download}">${icon('download')}<span>${c.cta}</span></a><span dir="ltr">${c.requirements}</span></div></div><div class="download-options"><a href="${repo}/releases/download/v${version}/Bou-Time-${version}-x64-Setup.exe"><strong>${c.full} ↗</strong><span>${c.fullDesc} <bdi>114 MB</bdi></span></a><a href="${repo}/releases/download/v${version}/Bou-Time-${version}-x64-Portable.exe"><strong>${c.portable} ↗</strong><span>${c.portableDesc} <bdi>114 MB</bdi></span></a><a class="all-downloads" href="${repo}/releases/tag/v${version}">${c.all} ↗</a></div><p class="publisher">${c.publisher}</p></section>
+<section class="download-section wrap" id="download"><div class="download-banner"><div><p class="eyebrow">${c.release} <bdi>${version}</bdi></p><h2>${c.downloadTitle}</h2><p>${c.downloadBody}</p></div><div class="download-action"><a class="button light-button" href="${download}">${icon('download')}<span>${c.cta}</span></a><span dir="ltr">${c.requirements}</span></div></div><div class="download-options"><a href="${repo}/releases/download/v${version}/Bou-Time-${version}-x64-Setup.exe"><strong>${c.full} ↗</strong><span>${c.fullDesc} <bdi>${Math.round(downloads.setup/1e6)} MB</bdi></span></a><a href="${repo}/releases/download/v${version}/Bou-Time-${version}-x64-Portable.exe"><strong>${c.portable} ↗</strong><span>${c.portableDesc} <bdi>${Math.round(downloads.portable/1e6)} MB</bdi></span></a><a class="all-downloads" href="${repo}/releases/tag/v${version}">${c.all} ↗</a></div><p class="publisher">${c.publisher}</p></section>
 <section class="faq wrap section"><h2>${c.faqTitle}</h2><div>${c.faqs.map(([q,a])=>`<details><summary>${q}<span aria-hidden="true">+</span></summary><p>${a}</p></details>`).join('')}</div></section>
 </main><footer class="footer"><div class="wrap footer-top"><div><a class="brand" href="${page}">${c.name}<span>.</span></a><p>${c.footer}</p></div><nav aria-label="${c.footerLabel}"><a href="${repo}/blob/main/PRIVACY.md">${c.privacy}</a><a href="${repo}">${c.source}</a><a href="${repo}/issues">${c.help}</a><a href="${c.other}" lang="${lang==='he'?'en':'he'}">${c.switch}</a></nav></div><div class="wrap footer-bottom"><span>© ${new Date().getFullYear()} ${c.name}</span><a href="assets/fonts/README.txt">${c.font}</a></div></footer>
 </body></html>`;

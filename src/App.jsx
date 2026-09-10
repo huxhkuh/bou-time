@@ -4,10 +4,12 @@ import {
   applyPreferences,
 } from "./preferences.js";
 import { tr, locale } from "./i18n.js";
+import { useDisplayNow } from "./useDisplayNow.js";
 import React, {
   useState,
   useEffect,
   useCallback,
+  useMemo,
   useSyncExternalStore,
 } from "react";
 import {
@@ -43,6 +45,9 @@ const getNav = () => [
 export default function App() {
   const prefs = useSyncExternalStore(subscribePreferences, getPreferences);
   const NAV = getNav();
+  const dateFormatter = useMemo(() => new Intl.DateTimeFormat(locale(), {
+    timeZone: "Asia/Jerusalem", weekday: "long", day: "numeric", month: "long", year: "numeric",
+  }), [prefs.language]);
   useEffect(() => {
     applyPreferences();
     window.bouDesktop?.setLanguage?.(prefs.language).catch(() => {});
@@ -51,8 +56,8 @@ export default function App() {
     [loadError, setLoadError] = useState(""),
     [page, setPage] = useState("today"),
     [modal, setModal] = useState(null),
-    [toast, setToast] = useState(null),
-    [now, setNow] = useState(Date.now());
+    [toast, setToast] = useState(null);
+  const now = useDisplayNow(state?.timer?.runningSince != null);
   const notify = useCallback(
     (text, error = false) => setToast({ text, error, id: Date.now() }),
     [],
@@ -74,10 +79,8 @@ export default function App() {
     const focus = () => refresh();
     window.addEventListener("focus", focus);
     document.addEventListener("visibilitychange", focus);
-    const id = setInterval(() => setNow(Date.now()), 500);
     return () => {
       unsub();
-      clearInterval(id);
       window.removeEventListener("focus", focus);
       document.removeEventListener("visibilitychange", focus);
     };
@@ -262,13 +265,7 @@ export default function App() {
             <h1>{titles[page]}</h1>
             <p>
               {page === "today"
-                ? new Intl.DateTimeFormat(locale(), {
-                    timeZone: "Asia/Jerusalem",
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  }).format(now)
+                ? dateFormatter.format(now)
                 : page === "projects"
                   ? tr("מהרעיון הראשון ועד השעה האחרונה.")
                   : page === "reports"

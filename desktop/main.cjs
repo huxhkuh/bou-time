@@ -62,7 +62,7 @@ function secureWindow(options) {
       nodeIntegration: false,
       sandbox: true,
       webSecurity: true,
-      backgroundThrottling: false,
+      backgroundThrottling: true,
     },
   });
   win.removeMenu();

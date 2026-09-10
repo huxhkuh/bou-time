@@ -1,5 +1,6 @@
 import { applyPreferences, getPreferences, subscribePreferences, setPreference } from "./preferences.js";
 import { tr } from "./i18n.js";
+import { useDisplayNow } from "./useDisplayNow.js";
 import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -33,7 +34,7 @@ function FullClockScreen({
   openFloating,
   showEntry,
 }) {
-  const [now, setNow] = useState(Date.now());
+  const now = useDisplayNow(state.timer?.runningSince != null, owner);
   const [project, setProject] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -44,11 +45,6 @@ function FullClockScreen({
   const selected = state.projects.some((p) => p.id === project && !p.archived)
     ? project
     : state.projects.find((p) => !p.archived)?.id || "";
-  useEffect(() => {
-    // Schedule the display in the visible window; elapsed time still comes from saved timestamps.
-    const id = owner.setInterval(() => setNow(Date.now()), 250);
-    return () => owner.clearInterval(id);
-  }, [owner]);
   async function act(type) {
     setBusy(true);
     setMessage("");

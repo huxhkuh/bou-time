@@ -61,7 +61,9 @@ Then run `python tests/installer-e2e.py --installer ../windows/Temura-Install.ex
 ## Download website
 
 For each new public version, run `npm run build:site` after updating the package
-version, then `npm run test:site`. This regenerates **both** `docs/index.html` and
+version and building the artifacts, then `npm run test:site`. The site generator
+saves exact installer sizes to `docs/downloads.json` for clean checkouts. This
+regenerates **both** `docs/index.html` and
 `docs/en.html` with matching versioned download links. Verify the published Pages
 site after deployment. Website-only edits do not require a new Windows release;
 see [DOWNLOAD-SITE.md](DOWNLOAD-SITE.md) for recordings, fonts and browser checks.
