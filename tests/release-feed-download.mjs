@@ -15,6 +15,8 @@ try {
   await app.evaluate(({app})=>{
     const load=process.getBuiltinModule('module').createRequire(app.getAppPath()+'/package.json');
     const u=load('electron-updater').autoUpdater;
+    // Keep QA downloads out of the personal updater's shared cache as well.
+    Object.defineProperty(u.app,'baseCachePath',{value:app.getPath('userData')});
     u.currentVersion=new (load('semver').SemVer)('1.4.0');
     globalThis.rangeRejected=false;
     u.logger={info(){},warn(){},debug(){},error(message){if(String(message).includes('Invalid partial download response'))globalThis.rangeRejected=true;}};
@@ -27,6 +29,7 @@ try {
   await section.getByRole('button',{name:'הורדת העדכון',exact:true}).click();
   await expect(section).toContainText('העדכון מוכן להתקנה',{timeout:300000});
   const payload=await app.evaluate(({app})=>process.getBuiltinModule('module').createRequire(app.getAppPath()+'/package.json')('electron-updater').autoUpdater.installerPath);
+  expect(payload.startsWith(profile+path.sep)).toBe(true);
   const hash=async file=>createHash('sha512').update(await fs.readFile(file)).digest('hex');
   expect(await hash(payload)).toBe(await hash(`../windows/Bou-Time-${target}-x64-Setup.exe`));
   const rangeRejected = await app.evaluate(()=>globalThis.rangeRejected);
